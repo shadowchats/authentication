@@ -1,8 +1,40 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Shadowchats.Authentication.Presentation", "Shadowchats.Authentication.Presentation\Shadowchats.Authentication.Presentation.csproj", "{A6E42E28-5E03-455E-B09A-60122E6185F2}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Shadowchats.Authentication.Core", "Shadowchats.Authentication.Core\Shadowchats.Authentication.Core.csproj", "{35A09FC0-BB2C-4BCA-AD46-7C7EB7A5AF6E}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Shadowchats.Authentication.Core.Tests", "Shadowchats.Authentication.Core.Tests\Shadowchats.Authentication.Core.Tests.csproj", "{4C85F77E-5410-4C1A-AA68-4BA10C987087}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Shadowchats.Authentication.Infrastructure", "Shadowchats.Authentication.Infrastructure\Shadowchats.Authentication.Infrastructure.csproj", "{1F8FB9F4-89FD-49F9-A9EC-00526B32372C}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Shadowchats.Authentication.Infrastructure.Tests", "Shadowchats.Authentication.Infrastructure.Tests\Shadowchats.Authentication.Infrastructure.Tests.csproj", "{E5CC1586-93D3-405E-9E40-58C17B3E14C1}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
 		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{A6E42E28-5E03-455E-B09A-60122E6185F2}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{A6E42E28-5E03-455E-B09A-60122E6185F2}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{A6E42E28-5E03-455E-B09A-60122E6185F2}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{A6E42E28-5E03-455E-B09A-60122E6185F2}.Release|Any CPU.Build.0 = Release|Any CPU
+		{35A09FC0-BB2C-4BCA-AD46-7C7EB7A5AF6E}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{35A09FC0-BB2C-4BCA-AD46-7C7EB7A5AF6E}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{35A09FC0-BB2C-4BCA-AD46-7C7EB7A5AF6E}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{35A09FC0-BB2C-4BCA-AD46-7C7EB7A5AF6E}.Release|Any CPU.Build.0 = Release|Any CPU
+		{4C85F77E-5410-4C1A-AA68-4BA10C987087}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{4C85F77E-5410-4C1A-AA68-4BA10C987087}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{4C85F77E-5410-4C1A-AA68-4BA10C987087}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{4C85F77E-5410-4C1A-AA68-4BA10C987087}.Release|Any CPU.Build.0 = Release|Any CPU
+		{1F8FB9F4-89FD-49F9-A9EC-00526B32372C}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{1F8FB9F4-89FD-49F9-A9EC-00526B32372C}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{1F8FB9F4-89FD-49F9-A9EC-00526B32372C}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{1F8FB9F4-89FD-49F9-A9EC-00526B32372C}.Release|Any CPU.Build.0 = Release|Any CPU
+		{E5CC1586-93D3-405E-9E40-58C17B3E14C1}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{E5CC1586-93D3-405E-9E40-58C17B3E14C1}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{E5CC1586-93D3-405E-9E40-58C17B3E14C1}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{E5CC1586-93D3-405E-9E40-58C17B3E14C1}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 EndGlobal
