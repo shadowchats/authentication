@@ -1,0 +1,2 @@
+# Shadowchats.Authentication
+Микросервис аутентификации мессенджера Shadowchats
