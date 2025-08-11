@@ -1,4 +1,4 @@
-using Grpc.Core;
+﻿using Grpc.Core;
 using Shadowchats.Authentication.Presentation;
 
 namespace Shadowchats.Authentication.Presentation.Services;
