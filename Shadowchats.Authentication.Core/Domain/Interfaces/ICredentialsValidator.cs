@@ -2,9 +2,7 @@
 
 namespace Shadowchats.Authentication.Core.Domain.Interfaces;
 
-public interface IUnitOfWork : IInfrastructureService
+public interface ICredentialsValidator : IDomainService
 {
-    void Begin();
-    void Commit();
-    void Rollback();
+    void EnsureCredentialsValidity(string password);
 }

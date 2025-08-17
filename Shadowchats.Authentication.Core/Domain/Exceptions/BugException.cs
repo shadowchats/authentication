@@ -1,6 +1,3 @@
 ﻿namespace Shadowchats.Authentication.Core.Domain.Exceptions;
 
-public class BugException : Exception
-{
-    public BugException(string message) : base(message) { }
-}
+public class BugException(string message) : BaseException(message);

@@ -1,6 +1,8 @@
-﻿namespace Shadowchats.Authentication.Core.Domain.Interfaces;
+﻿using Shadowchats.Authentication.Core.Domain.Base;
 
-public interface IPasswordHasher
+namespace Shadowchats.Authentication.Core.Domain.Interfaces;
+
+public interface IPasswordHasher : IInfrastructureService
 {
     string Hash(string password);
     bool Verify(string dynamicSaltAndHashedPassword, string password);

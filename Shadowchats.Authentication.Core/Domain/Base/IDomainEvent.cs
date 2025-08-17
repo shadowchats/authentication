@@ -1,3 +1,3 @@
 ﻿namespace Shadowchats.Authentication.Core.Domain.Base;
 
-public interface IEvent;
+public interface IDomainEvent;

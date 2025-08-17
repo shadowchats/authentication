@@ -5,11 +5,17 @@ namespace Shadowchats.Authentication.Core.Domain.Base;
 
 public abstract class Entity
 {
-    protected Entity(Guid guid) => Guid = guid;
+    protected Entity(Guid guid)
+    {
+        if (guid == Guid.Empty)
+            throw new InvariantViolationException("Guid is empty.");
+        
+        Guid = guid;
+    }
 
-    public void AddDomainEvent(IEvent eventItem) => _domainEvents.Add(eventItem);
+    public void AddDomainEvent(IDomainEvent domainEventItem) => _domainEvents.Add(domainEventItem);
 
-    public void RemoveDomainEvent(IEvent eventItem) => _domainEvents.Remove(eventItem);
+    public void RemoveDomainEvent(IDomainEvent domainEventItem) => _domainEvents.Remove(domainEventItem);
 
     public void ClearDomainEvents() => _domainEvents.Clear();
 
@@ -29,7 +35,7 @@ public abstract class Entity
 
     public Guid Guid { get; }
     
-    public IReadOnlyCollection<IEvent> DomainEvents => _domainEvents.AsReadOnly();
+    public IReadOnlyCollection<IDomainEvent> DomainEvents => _domainEvents.AsReadOnly();
 
-    private readonly List<IEvent> _domainEvents = [];
+    private readonly List<IDomainEvent> _domainEvents = [];
 }
