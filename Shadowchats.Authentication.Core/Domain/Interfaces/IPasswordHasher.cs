@@ -1,4 +1,4 @@
-﻿namespace Shadowchats.Authentication.Core.Application.Interfaces;
+﻿namespace Shadowchats.Authentication.Core.Domain.Interfaces;
 
 public interface IPasswordHasher
 {

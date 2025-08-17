@@ -1,27 +1,14 @@
 ﻿<wpf:ResourceDictionary xml:space="preserve" xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml" xmlns:s="clr-namespace:System;assembly=mscorlib" xmlns:ss="urn:shemas-jetbrains-com:settings-storage-xaml" xmlns:wpf="http://schemas.microsoft.com/winfx/2006/xaml/presentation">
 	<s:String x:Key="/Default/CodeInspection/ExcludedFiles/FilesAndFoldersToSkip2/=7020124F_002D9FFC_002D4AC3_002D8F3D_002DAAB8E0240759_002Ff_003ARfc2898DeriveBytes_002EOneShot_002Ecs_002Fl_003AC_0021_003FUsers_003Flenya_003FAppData_003FRoaming_003FJetBrains_003FRider2025_002E1_003Fresharper_002Dhost_003FSourcesCache_003Fe352585da4b3ac58bcf395d35926324ce0c3c3ffb382f193827e8383a9e9955_003FRfc2898DeriveBytes_002EOneShot_002Ecs/@EntryIndexedValue">ForceIncluded</s:String>
-	<s:String x:Key="/Default/Environment/UnitTesting/UnitTestSessionStore/Sessions/=6392d099_002D56cd_002D4a14_002Dbd47_002Dbc5f972d639a/@EntryIndexedValue">&lt;SessionState ContinuousTestingMode="0" Name="Hash_Test #3" xmlns="urn:schemas-jetbrains-com:jetbrains-ut-session"&gt;&#xD;
+	<s:String x:Key="/Default/Environment/Highlighting/HighlightingSourceSnapshotLocation/@EntryValue">C:\Users\lenya\AppData\Local\JetBrains\Rider2025.1\resharper-host\temp\Rider\vAny\CoverageData\_Shadowchats.Authentication.1926998657\Snapshot\snapshot.utdcvr</s:String>
+	
+	<s:String x:Key="/Default/Environment/UnitTesting/UnitTestSessionStore/Sessions/=92ad1291_002Dc87c_002D4d78_002D87df_002Dde472d0b68bb/@EntryIndexedValue">&lt;SessionState ContinuousTestingMode="0" IsActive="True" Name="PasswordHasherTests" xmlns="urn:schemas-jetbrains-com:jetbrains-ut-session"&gt;&#xD;
   &lt;TestAncestor&gt;&#xD;
-    &lt;TestId&gt;xUnit::E5CC1586-93D3-405E-9E40-58C17B3E14C1::net9.0::Shadowchats.Authentication.Infrastructure.Tests.Cryptography.PasswordHasherTests.Hash_Test&lt;/TestId&gt;&#xD;
+    &lt;TestId&gt;xUnit::E5CC1586-93D3-405E-9E40-58C17B3E14C1::net9.0::Shadowchats.Authentication.Infrastructure.Tests.PasswordHasherTests&lt;/TestId&gt;&#xD;
   &lt;/TestAncestor&gt;&#xD;
 &lt;/SessionState&gt;</s:String>
-	<s:String x:Key="/Default/Environment/UnitTesting/UnitTestSessionStore/Sessions/=660e08a7_002Dd54d_002D474d_002D8606_002D72151936161a/@EntryIndexedValue">&lt;SessionState ContinuousTestingMode="0" Name="Hash_Test #2" xmlns="urn:schemas-jetbrains-com:jetbrains-ut-session"&gt;&#xD;
-  &lt;TestAncestor&gt;&#xD;
-    &lt;TestId&gt;xUnit::E5CC1586-93D3-405E-9E40-58C17B3E14C1::net9.0::Shadowchats.Authentication.Infrastructure.Tests.Cryptography.PasswordHasherTests.Hash_Test&lt;/TestId&gt;&#xD;
-  &lt;/TestAncestor&gt;&#xD;
-&lt;/SessionState&gt;</s:String>
-	<s:String x:Key="/Default/Environment/UnitTesting/UnitTestSessionStore/Sessions/=bdcedc08_002D02a5_002D4694_002D94da_002D1f1bf9266334/@EntryIndexedValue">&lt;SessionState ContinuousTestingMode="0" Name="Hash_Test" xmlns="urn:schemas-jetbrains-com:jetbrains-ut-session"&gt;&#xD;
-  &lt;TestAncestor&gt;&#xD;
-    &lt;TestId&gt;xUnit::E5CC1586-93D3-405E-9E40-58C17B3E14C1::net9.0::Shadowchats.Authentication.Infrastructure.Tests.Cryptography.PasswordHasherTests.Hash_Test&lt;/TestId&gt;&#xD;
-  &lt;/TestAncestor&gt;&#xD;
-&lt;/SessionState&gt;</s:String>
-	<s:String x:Key="/Default/Environment/UnitTesting/UnitTestSessionStore/Sessions/=d0f34a03_002Dea9d_002D460f_002Dbd3e_002D41797fc3e498/@EntryIndexedValue">&lt;SessionState ContinuousTestingMode="0" Name="Hash_Test #5" xmlns="urn:schemas-jetbrains-com:jetbrains-ut-session"&gt;&#xD;
-  &lt;TestAncestor&gt;&#xD;
-    &lt;TestId&gt;xUnit::E5CC1586-93D3-405E-9E40-58C17B3E14C1::net9.0::Shadowchats.Authentication.Infrastructure.Tests.Cryptography.PasswordHasherTests.Hash_Test&lt;/TestId&gt;&#xD;
-  &lt;/TestAncestor&gt;&#xD;
-&lt;/SessionState&gt;</s:String>
-	<s:String x:Key="/Default/Environment/UnitTesting/UnitTestSessionStore/Sessions/=de3a28d0_002Dd493_002D4dbe_002Db46f_002Dd809c468d434/@EntryIndexedValue">&lt;SessionState ContinuousTestingMode="0" IsActive="True" Name="Hash_Test #4" xmlns="urn:schemas-jetbrains-com:jetbrains-ut-session"&gt;&#xD;
-  &lt;TestAncestor&gt;&#xD;
-    &lt;TestId&gt;xUnit::E5CC1586-93D3-405E-9E40-58C17B3E14C1::net9.0::Shadowchats.Authentication.Infrastructure.Tests.Cryptography.PasswordHasherTests.Hash_Test&lt;/TestId&gt;&#xD;
-  &lt;/TestAncestor&gt;&#xD;
-&lt;/SessionState&gt;</s:String></wpf:ResourceDictionary>
+	
+	
+	
+	
+	</wpf:ResourceDictionary>

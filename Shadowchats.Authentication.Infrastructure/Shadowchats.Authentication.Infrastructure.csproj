@@ -8,10 +8,6 @@
     </PropertyGroup>
 
     <ItemGroup>
-      <Folder Include="Persistence\" />
-    </ItemGroup>
-
-    <ItemGroup>
       <ProjectReference Include="..\Shadowchats.Authentication.Core\Shadowchats.Authentication.Core.csproj" />
     </ItemGroup>
 
