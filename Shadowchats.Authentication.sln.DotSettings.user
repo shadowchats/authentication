@@ -12,6 +12,7 @@
     &lt;TestId&gt;xUnit::8E961272-2384-47A6-B05A-783C975ECDCD::net9.0::Shadowchats.Authentication.Core.Tests.Domain.ValueObjects.CredentialsTests&lt;/TestId&gt;&#xD;
     &lt;TestId&gt;xUnit::8E961272-2384-47A6-B05A-783C975ECDCD::net9.0::Shadowchats.Authentication.Core.Tests.Domain.Base.EntityTests.AddDomainEvent_Test&lt;/TestId&gt;&#xD;
     &lt;TestId&gt;xUnit::8E961272-2384-47A6-B05A-783C975ECDCD::net9.0::Shadowchats.Authentication.Core.Tests.Domain.Base.EntityTests&lt;/TestId&gt;&#xD;
+    &lt;TestId&gt;xUnit::8E961272-2384-47A6-B05A-783C975ECDCD::net9.0::Shadowchats.Authentication.Core.Tests.Domain.ValueObjectTests&lt;/TestId&gt;&#xD;
   &lt;/TestAncestor&gt;&#xD;
 &lt;/SessionState&gt;</s:String>
 	
