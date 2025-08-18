@@ -3,7 +3,7 @@ using Shadowchats.Authentication.Core.Domain.Exceptions;
 
 namespace Shadowchats.Authentication.Core.Domain.Base;
 
-public abstract class Entity
+public abstract class Entity<TEntity> where TEntity : Entity<TEntity>
 {
     protected Entity(Guid guid)
     {
@@ -19,19 +19,19 @@ public abstract class Entity
 
     public void ClearDomainEvents() => _domainEvents.Clear();
 
-    public override bool Equals(object? obj) => obj is Entity entity && Equals(entity);
+    public sealed override bool Equals(object? obj) => obj is TEntity entity && Equals(entity);
 
-    public bool Equals(Entity other) => Guid == other.Guid;
+    public bool Equals(TEntity other) => Guid == other.Guid;
 
-    public override int GetHashCode() => Guid.GetHashCode();
+    public sealed override int GetHashCode() => Guid.GetHashCode();
 
     [Obsolete("Don't use == operator, use Equals or ReferenceEquals methods instead", true)]
     [EditorBrowsable(EditorBrowsableState.Never)]
-    public static bool operator ==(Entity _, Entity __) => throw new BugException("== operator is not allowed");
+    public static bool operator ==(Entity<TEntity> _, Entity<TEntity> __) => throw new BugException("== operator is not allowed");
 
     [Obsolete("Don't use != operator, use !Equals or !ReferenceEquals methods instead", true)]
     [EditorBrowsable(EditorBrowsableState.Never)]
-    public static bool operator !=(Entity _, Entity __) => throw new BugException("!= operator is not allowed");
+    public static bool operator !=(Entity<TEntity> _, Entity<TEntity> __) => throw new BugException("!= operator is not allowed");
 
     public Guid Guid { get; }
     

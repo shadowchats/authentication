@@ -6,6 +6,12 @@
 	<s:String x:Key="/Default/Environment/UnitTesting/UnitTestSessionStore/Sessions/=92ad1291_002Dc87c_002D4d78_002D87df_002Dde472d0b68bb/@EntryIndexedValue">&lt;SessionState ContinuousTestingMode="0" IsActive="True" Name="PasswordHasherTests" xmlns="urn:schemas-jetbrains-com:jetbrains-ut-session"&gt;&#xD;
   &lt;TestAncestor&gt;&#xD;
     &lt;TestId&gt;xUnit::E5CC1586-93D3-405E-9E40-58C17B3E14C1::net9.0::Shadowchats.Authentication.Infrastructure.Tests.PasswordHasherTests&lt;/TestId&gt;&#xD;
+    &lt;TestId&gt;xUnit::E5CC1586-93D3-405E-9E40-58C17B3E14C1::net9.0::Shadowchats.Authentication.Infrastructure.Tests.GuidGeneratorTests.Generate_Test&lt;/TestId&gt;&#xD;
+    &lt;TestId&gt;xUnit::8E961272-2384-47A6-B05A-783C975ECDCD::net9.0::Shadowchats.Authentication.Core.Tests.Domain.ValueObjects.CredentialsTests.Create_OK_Test&lt;/TestId&gt;&#xD;
+    &lt;TestId&gt;xUnit::8E961272-2384-47A6-B05A-783C975ECDCD::net9.0::Shadowchats.Authentication.Core.Tests.Domain.ValueObjects.CredentialsTests.Create_InvariantViolationException_Test&lt;/TestId&gt;&#xD;
+    &lt;TestId&gt;xUnit::8E961272-2384-47A6-B05A-783C975ECDCD::net9.0::Shadowchats.Authentication.Core.Tests.Domain.ValueObjects.CredentialsTests&lt;/TestId&gt;&#xD;
+    &lt;TestId&gt;xUnit::8E961272-2384-47A6-B05A-783C975ECDCD::net9.0::Shadowchats.Authentication.Core.Tests.Domain.Base.EntityTests.AddDomainEvent_Test&lt;/TestId&gt;&#xD;
+    &lt;TestId&gt;xUnit::8E961272-2384-47A6-B05A-783C975ECDCD::net9.0::Shadowchats.Authentication.Core.Tests.Domain.Base.EntityTests&lt;/TestId&gt;&#xD;
   &lt;/TestAncestor&gt;&#xD;
 &lt;/SessionState&gt;</s:String>
 	

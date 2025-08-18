@@ -2,7 +2,7 @@
 
 namespace Shadowchats.Authentication.Core.Domain.Interfaces;
 
-public interface ICredentialsValidator : IDomainService
+public interface IGuidGenerator : IInfrastructureService
 {
-    void EnsureCredentialsValidity(string password);
+    Guid Generate();
 }

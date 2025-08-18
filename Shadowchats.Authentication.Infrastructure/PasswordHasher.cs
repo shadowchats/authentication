@@ -50,19 +50,19 @@ public class PasswordHasher : IPasswordHasher
         );
     }
 
-    public bool Verify(string dynamicSaltAndHashedPassword, string providedPassword)
+    public bool Verify(string dynamicSaltAndPasswordHash, string providedPassword)
     {
-        var bytesOfDynamicSaltAndHashedPassword = Convert.FromBase64String(dynamicSaltAndHashedPassword);
+        var bytesOfDynamicSaltAndPasswordHash = Convert.FromBase64String(dynamicSaltAndPasswordHash);
 
-        var hashedPassword = bytesOfDynamicSaltAndHashedPassword.Skip(_saltsManager.DynamicSaltSizeInBytes).Take(HashedPasswordLength);
-        var hashedProvidedPassword = HashPassword(providedPassword, bytesOfDynamicSaltAndHashedPassword.Take(_saltsManager.DynamicSaltSizeInBytes));
+        var passwordHash = bytesOfDynamicSaltAndPasswordHash.Skip(_saltsManager.DynamicSaltSizeInBytes).Take(PasswordHashLength);
+        var providedPasswordHash = HashPassword(providedPassword, bytesOfDynamicSaltAndPasswordHash.Take(_saltsManager.DynamicSaltSizeInBytes));
 
-        return hashedPassword.SequenceEqual(hashedProvidedPassword);
+        return passwordHash.SequenceEqual(providedPasswordHash);
     }
 
     private byte[] HashPassword(string password, IEnumerable<byte> dynamicSalt)
     {
-        return Rfc2898DeriveBytes.Pbkdf2(password, _saltsManager.CombineStaticAndDynamicSalts(dynamicSalt), IterationsNumber, HashingAlgorithmName, HashedPasswordLength);
+        return Rfc2898DeriveBytes.Pbkdf2(password, _saltsManager.CombineStaticAndDynamicSalts(dynamicSalt), IterationsNumber, HashingAlgorithmName, PasswordHashLength);
     }
 
     private readonly ISaltsManager _saltsManager;
@@ -71,5 +71,5 @@ public class PasswordHasher : IPasswordHasher
 
     private static readonly HashAlgorithmName HashingAlgorithmName = HashAlgorithmName.SHA512;
 
-    private const int HashedPasswordLength = 64;
+    private const int PasswordHashLength = 64;
 }

@@ -3,15 +3,15 @@ using Shadowchats.Authentication.Core.Domain.Exceptions;
 
 namespace Shadowchats.Authentication.Core.Domain.Base;
 
-public abstract class ValueObject
+public abstract class ValueObject<TValueObject> where TValueObject : ValueObject<TValueObject>
 {
     protected abstract IEnumerable<object> GetEqualityComponents();
     
-    public override bool Equals(object? obj) => obj is ValueObject valueObject && Equals(valueObject);
+    public sealed override bool Equals(object? obj) => obj is TValueObject valueObject && Equals(valueObject);
 
-    public bool Equals(ValueObject other) => GetEqualityComponents().SequenceEqual(other.GetEqualityComponents());
+    public bool Equals(TValueObject other) => GetEqualityComponents().SequenceEqual(other.GetEqualityComponents());
 
-    public override int GetHashCode()
+    public sealed override int GetHashCode()
     {
         var hashCode = new HashCode();
         foreach (var component in GetEqualityComponents())
@@ -21,9 +21,9 @@ public abstract class ValueObject
 
     [Obsolete("Don't use == operator, use Equals method instead", true)]
     [EditorBrowsable(EditorBrowsableState.Never)]
-    public static bool operator ==(ValueObject _, ValueObject __) => throw new BugException("== operator is not allowed");
+    public static bool operator ==(ValueObject<TValueObject> _, ValueObject<TValueObject> __) => throw new BugException("== operator is not allowed");
 
     [Obsolete("Don't use != operator, use !Equals method instead", true)]
     [EditorBrowsable(EditorBrowsableState.Never)]
-    public static bool operator !=(ValueObject _, ValueObject __) => throw new BugException("!= operator is not allowed");
+    public static bool operator !=(ValueObject<TValueObject> _, ValueObject<TValueObject> __) => throw new BugException("!= operator is not allowed");
 }

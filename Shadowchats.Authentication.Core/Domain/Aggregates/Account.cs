@@ -1,22 +1,14 @@
 ﻿using Shadowchats.Authentication.Core.Domain.Base;
 using Shadowchats.Authentication.Core.Domain.Interfaces;
+using Shadowchats.Authentication.Core.Domain.ValueObjects;
 
 namespace Shadowchats.Authentication.Core.Domain.Aggregates;
 
-public class Account : AggregateRoot
+public class Account : AggregateRoot<Account>
 {
-    public Account(ICredentialsValidator credentialsValidator, IPasswordHasher passwordHasher, Guid guid, string login, string password) : base(guid)
-    {
-        credentialsValidator.EnsureCredentialsValidity(password);
-        if (lo)
-
-        PasswordHash = passwordHasher.Hash(password);
-    }
-
-    private static void EnsurePasswordValidity(string password)
-    {
-        
-    }
+    public static Account Create(IGuidGenerator guidGenerator, Credentials credentials) => new(guidGenerator.Generate(), credentials);
     
-    
+    private Account(Guid guid, Credentials credentials) : base(guid) => Credentials = credentials;
+
+    public Credentials Credentials { get; }
 }

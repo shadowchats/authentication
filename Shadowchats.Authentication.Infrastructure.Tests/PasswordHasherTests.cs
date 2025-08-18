@@ -11,7 +11,7 @@ public class PasswordHasherTests
         var dynamicSalt = "dynamic salt"u8.ToArray();
         var salt = "static + dynamic salts"u8.ToArray();
         const string password = "TeSt1=";
-        const string expectedHashedPassword =
+        const string expectedPasswordHash =
             "ZHluYW1pYyBzYWx0cqmIOh5nzkHUJXiTFjPerBmNfHNp73HD1p4LGU77UXFjNptJ9en9b362qpF1VQuDowOQ/1JjecNCJo+GnVhGrw=="; // Base64(dynamicSalt + PBKDF2("SHA512", password, salt, 100_000, 64))
         
         var saltsManager = new Mock<PasswordHasher.ISaltsManager>();
@@ -21,10 +21,10 @@ public class PasswordHasherTests
         var passwordHasher = new PasswordHasher(saltsManager.Object);
 
         // Act
-        var actualHashedPassword = passwordHasher.Hash(password);
+        var actualPasswordHash = passwordHasher.Hash(password);
 
         // Assert
-        Assert.Equal(expectedHashedPassword, actualHashedPassword);
+        Assert.Equal(expectedPasswordHash, actualPasswordHash);
         
         saltsManager.Verify(sm => sm.GenerateDynamic(), Times.Once);
         saltsManager.Verify(sm => sm.CombineStaticAndDynamicSalts(dynamicSalt), Times.Once);
@@ -37,7 +37,7 @@ public class PasswordHasherTests
         var dynamicSalt = "dynamic salt"u8.ToArray();
         var salt = "static + dynamic salts"u8.ToArray();
         const string password = "TeSt1=";
-        const string hashedPassword =
+        const string passwordHash =
             "ZHluYW1pYyBzYWx0cqmIOh5nzkHUJXiTFjPerBmNfHNp73HD1p4LGU77UXFjNptJ9en9b362qpF1VQuDowOQ/1JjecNCJo+GnVhGrw=="; // Base64(dynamicSalt + PBKDF2("SHA512", password, salt, 100_000, 64))
         
         var saltsManager = new Mock<PasswordHasher.ISaltsManager>();
@@ -47,7 +47,7 @@ public class PasswordHasherTests
         var passwordHasher = new PasswordHasher(saltsManager.Object);
 
         // Act
-        var actualPasswordVerified = passwordHasher.Verify(hashedPassword, password);
+        var actualPasswordVerified = passwordHasher.Verify(passwordHash, password);
 
         // Assert
         Assert.True(actualPasswordVerified);
@@ -63,7 +63,7 @@ public class PasswordHasherTests
         var dynamicSalt = "dynamic salt"u8.ToArray();
         var salt = "static + dynamic salts"u8.ToArray();
         const string password = "TeSt2=";
-        const string hashedPassword =
+        const string passwordHash =
             "ZHluYW1pYyBzYWx0cqmIOh5nzkHUJXiTFjPerBmNfHNp73HD1p4LGU77UXFjNptJ9en9b362qpF1VQuDowOQ/1JjecNCJo+GnVhGrw=="; // Base64(dynamicSalt + PBKDF2("SHA512", password, salt, 100_000, 64))
         
         var saltsManager = new Mock<PasswordHasher.ISaltsManager>();
@@ -73,7 +73,7 @@ public class PasswordHasherTests
         var passwordHasher = new PasswordHasher(saltsManager.Object);
 
         // Act
-        var actualPasswordVerified = passwordHasher.Verify(hashedPassword, password);
+        var actualPasswordVerified = passwordHasher.Verify(passwordHash, password);
 
         // Assert
         Assert.False(actualPasswordVerified);
