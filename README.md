@@ -22,9 +22,11 @@ See [LICENSE](LICENSE) for full details.
 ### Why AGPL v3?
 We chose AGPL v3 to ensure that Shadowchats remains free and open source forever, even when used as a network service. This protects users' rights to access, study, and modify the software that handles their private communications.
 
+## 📄 [COPYRIGHT](COPYRIGHT).
+
 ## 📧 Contact
 
 For questions about licensing or to request source code:
-- Email: &#108;&#101;&#110;&#121;&#97;&#46;&#100;&#111;&#114;&#111;&#118;&#115;&#107;&#111;&#121;&#64;&#109;&#97;&#105;&#108;&#46;&#114;&#117;
+- Email: lenya.dorovskoy@mail.ru
 - GitHub repository: https://github.com/0ne290/Shadowchats.Authentication
 - Author's GitHub: https://github.com/0ne290
