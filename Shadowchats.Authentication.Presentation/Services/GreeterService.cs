@@ -1,4 +1,7 @@
-﻿using Grpc.Core;
+﻿// Shadowchats - Copyright (C) 2025 Доровской Алексей Васильевич
+// Licensed under AGPL v3.0 - see file LICENSE
+
+using Grpc.Core;
 using Shadowchats.Authentication.Presentation;
 
 namespace Shadowchats.Authentication.Presentation.Services;

@@ -1,4 +1,7 @@
-﻿using Moq;
+﻿// Shadowchats - Copyright (C) 2025 Доровской Алексей Васильевич
+// Licensed under AGPL v3.0 - see file LICENSE
+
+using Moq;
 
 namespace Shadowchats.Authentication.Infrastructure.Tests;
 
