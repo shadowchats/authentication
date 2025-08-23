@@ -11,7 +11,7 @@ using Shadowchats.Authentication.Core.Domain.Exceptions;
 
 namespace Shadowchats.Authentication.Core.Domain.Base;
 
-public abstract class Entity<TEntity> where TEntity : Entity<TEntity>
+internal abstract class Entity<TEntity> where TEntity : Entity<TEntity>
 {
     protected Entity(Guid guid)
     {

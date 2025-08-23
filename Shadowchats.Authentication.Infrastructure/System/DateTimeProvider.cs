@@ -1,8 +1,8 @@
 ﻿using Shadowchats.Authentication.Core.Domain.Interfaces;
 
-namespace Shadowchats.Authentication.Infrastructure.Domain;
+namespace Shadowchats.Authentication.Infrastructure.System;
 
-public class DateTimeProvider : IDateTimeProvider
+internal class DateTimeProvider : IDateTimeProvider
 {
     public DateTime UtcNow => DateTime.UtcNow;
 }

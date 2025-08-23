@@ -6,6 +6,5 @@
 // (at your option) any later version. See the LICENSE file for details.
 // For full copyright and authorship information, see the COPYRIGHT file.
 
-namespace Shadowchats.Authentication.Core.Domain.Base;
-
-public interface IRepository;
+[assembly: System.Runtime.CompilerServices.InternalsVisibleTo("Shadowchats.Authentication.Infrastructure")]
+[assembly: System.Runtime.CompilerServices.InternalsVisibleTo("Shadowchats.Authentication.Core.Tests")]

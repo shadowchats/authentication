@@ -1,8 +1,9 @@
 ﻿using Shadowchats.Authentication.Core.Application.Interfaces;
+using Shadowchats.Authentication.Infrastructure.Persistence;
 
-namespace Shadowchats.Authentication.Core.Application.Decorators;
+namespace Shadowchats.Authentication.Infrastructure.Bus.Decorators;
 
-public class UnitOfWorkDecorator<TCommand, TResult> : ICommandHandler<TCommand, TResult>
+internal class UnitOfWorkDecorator<TCommand, TResult> : ICommandHandler<TCommand, TResult>
     where TCommand : ICommand<TResult>
 {
     public UnitOfWorkDecorator(IUnitOfWork unitOfWork, ICommandHandler<TCommand, TResult> decorated)

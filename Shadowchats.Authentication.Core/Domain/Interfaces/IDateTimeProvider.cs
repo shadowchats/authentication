@@ -1,6 +1,6 @@
 ﻿namespace Shadowchats.Authentication.Core.Domain.Interfaces;
 
-public interface IDateTimeProvider
+internal interface IDateTimeProvider
 {
     DateTime UtcNow { get; }
 }

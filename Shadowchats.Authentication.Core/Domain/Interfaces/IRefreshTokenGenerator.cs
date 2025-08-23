@@ -1,6 +1,6 @@
 ﻿namespace Shadowchats.Authentication.Core.Domain.Interfaces;
 
-public interface IRefreshTokenGenerator
+internal interface IRefreshTokenGenerator
 {
     string Generate();
 }

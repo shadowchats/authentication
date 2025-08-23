@@ -24,7 +24,7 @@ namespace Shadowchats.Authentication.Core.Application.UseCases
             public required string Message { get; init; }
         }
         
-        public class RegisterAccountHandler : ICommandHandler<RegisterAccountCommand, RegisterAccountResult>
+        internal class RegisterAccountHandler : ICommandHandler<RegisterAccountCommand, RegisterAccountResult>
         {
             public RegisterAccountHandler(IAccountRepository accountRepository, IPasswordHasher passwordHasher, IGuidGenerator guidGenerator)
             {

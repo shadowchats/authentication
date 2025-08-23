@@ -11,7 +11,7 @@ using Shadowchats.Authentication.Core.Domain.Exceptions;
 
 namespace Shadowchats.Authentication.Core.Domain.Base;
 
-public abstract class ValueObject<TValueObject> where TValueObject : ValueObject<TValueObject>
+internal abstract class ValueObject<TValueObject> where TValueObject : ValueObject<TValueObject>
 {
     protected abstract IEnumerable<object> GetEqualityComponents();
     

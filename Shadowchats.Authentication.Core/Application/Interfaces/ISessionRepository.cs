@@ -2,7 +2,7 @@
 
 namespace Shadowchats.Authentication.Core.Application.Interfaces;
 
-public interface ISessionRepository
+internal interface ISessionRepository
 {
     Task<Session?> GetByRefreshToken(string refreshToken);
     Task Add(Session session);

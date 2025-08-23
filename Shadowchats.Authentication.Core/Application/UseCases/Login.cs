@@ -26,7 +26,7 @@ namespace Shadowchats.Authentication.Core.Application.UseCases
             public required string AccessToken { get; init; }
         }
         
-        public class LoginHandler : ICommandHandler<LoginCommand, LoginResult>
+        internal class LoginHandler : ICommandHandler<LoginCommand, LoginResult>
         {
             public LoginHandler(IAccountRepository accountRepository, ISessionRepository sessionRepository, IPasswordHasher passwordHasher, IGuidGenerator guidGenerator, IDateTimeProvider dateTimeProvider, IRefreshTokenGenerator refreshTokenGenerator, IAccessTokenIssuer accessTokenIssuer)
             {

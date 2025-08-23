@@ -4,7 +4,7 @@ using Shadowchats.Authentication.Core.Domain.Interfaces;
 
 namespace Shadowchats.Authentication.Core.Domain.Aggregates;
 
-public class Session : AggregateRoot<Session>
+internal class Session : AggregateRoot<Session>
 {
     public static Session Create(IGuidGenerator guidGenerator, IDateTimeProvider dateTimeProvider, IRefreshTokenGenerator refreshTokenGenerator,
         Guid accountId) => new(guidGenerator.Generate(), accountId, dateTimeProvider.UtcNow.AddDays(LifetimeInDays),

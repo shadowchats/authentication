@@ -2,7 +2,7 @@
 
 namespace Shadowchats.Authentication.Core.Application.Interfaces;
 
-public interface IAccountRepository
+internal interface IAccountRepository
 {
     Task<Account?> GetByLogin(string login);
     Task Add(Account account);

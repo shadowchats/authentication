@@ -6,7 +6,7 @@
 // (at your option) any later version. See the LICENSE file for details.
 // For full copyright and authorship information, see the COPYRIGHT file.
 
-using Shadowchats.Authentication.Infrastructure.Domain;
+using Shadowchats.Authentication.Infrastructure.System;
 
 namespace Shadowchats.Authentication.Infrastructure.Tests;
 

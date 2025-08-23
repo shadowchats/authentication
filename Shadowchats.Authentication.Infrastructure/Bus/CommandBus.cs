@@ -1,9 +1,9 @@
 ﻿using Microsoft.Extensions.DependencyInjection;
 using Shadowchats.Authentication.Core.Application.Interfaces;
 
-namespace Shadowchats.Authentication.Infrastructure.Application;
+namespace Shadowchats.Authentication.Infrastructure.Bus;
 
-public class CommandBus : ICommandBus
+internal class CommandBus : ICommandBus
 {
     public CommandBus(IServiceProvider services)
     {

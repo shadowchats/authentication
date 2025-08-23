@@ -1,7 +1,7 @@
 ﻿using System.Security.Cryptography;
 using Shadowchats.Authentication.Core.Domain.Interfaces;
 
-namespace Shadowchats.Authentication.Infrastructure.Domain;
+namespace Shadowchats.Authentication.Infrastructure.Identity;
 
 public class RefreshTokenGenerator : IRefreshTokenGenerator
 {

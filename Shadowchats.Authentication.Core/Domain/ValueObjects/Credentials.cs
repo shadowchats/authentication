@@ -12,7 +12,7 @@ using Shadowchats.Authentication.Core.Domain.Interfaces;
 
 namespace Shadowchats.Authentication.Core.Domain.ValueObjects;
 
-public class Credentials : ValueObject<Credentials>
+internal class Credentials : ValueObject<Credentials>
 {
     public static Credentials Create(IPasswordHasher passwordHasher, string login, string password)
     {
