@@ -86,6 +86,8 @@ public class Credentials : ValueObject<Credentials>
         Login = login;
         PasswordHash = passwordHash;
     }
+    
+    public bool Verify(IPasswordHasher hasher, string password) => hasher.Verify(PasswordHash, password);
 
     protected override IEnumerable<object> GetEqualityComponents()
     {

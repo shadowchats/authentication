@@ -7,6 +7,7 @@
 // For full copyright and authorship information, see the COPYRIGHT file.
 
 using Moq;
+using Shadowchats.Authentication.Infrastructure.Domain;
 
 namespace Shadowchats.Authentication.Infrastructure.Tests;
 

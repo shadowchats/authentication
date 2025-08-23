@@ -6,9 +6,9 @@
 // (at your option) any later version. See the LICENSE file for details.
 // For full copyright and authorship information, see the COPYRIGHT file.
 
-namespace Shadowchats.Authentication.Core.Domain.Entities;
+namespace Shadowchats.Authentication.Core.Application.Interfaces;
 
-public class Session
+public interface ICommandHandler<TCommand, TResult> where TCommand : ICommand<TResult>
 {
-
+    Task<TResult> Handle(TCommand command);
 }

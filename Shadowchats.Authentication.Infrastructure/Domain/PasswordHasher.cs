@@ -9,7 +9,7 @@
 using System.Security.Cryptography;
 using Shadowchats.Authentication.Core.Domain.Interfaces;
 
-namespace Shadowchats.Authentication.Infrastructure;
+namespace Shadowchats.Authentication.Infrastructure.Domain;
 
 public class PasswordHasher : IPasswordHasher
 {
@@ -27,11 +27,11 @@ public class PasswordHasher : IPasswordHasher
         public byte[] GenerateDynamic() => RandomNumberGenerator.GetBytes(DynamicSaltSizeInBytes);
 
         public byte[] CombineStaticAndDynamicSalts(IEnumerable<byte> dynamicSalt) =>
-            StaticSalt.Concat(dynamicSalt).ToArray();
+            _staticSalt.Concat(dynamicSalt).ToArray();
 
         public int DynamicSaltSizeInBytes { get; } = 64;
         
-        private static readonly byte[] StaticSalt =
+        private readonly byte[] _staticSalt =
         [
             233, 135, 9, 179, 31, 107, 55, 87, 204, 145, 192, 69, 43, 164, 117, 210, 220, 182, 196, 196, 24, 82, 147, 122,
             140, 120, 44, 26, 40, 176, 234, 251, 33, 12, 91, 3, 54, 140, 22, 194, 21, 72, 111, 40, 149, 21, 117, 151, 201,
@@ -70,14 +70,14 @@ public class PasswordHasher : IPasswordHasher
 
     private byte[] HashPassword(string password, IEnumerable<byte> dynamicSalt)
     {
-        return Rfc2898DeriveBytes.Pbkdf2(password, _saltsManager.CombineStaticAndDynamicSalts(dynamicSalt), IterationsNumber, HashingAlgorithmName, PasswordHashLength);
+        return Rfc2898DeriveBytes.Pbkdf2(password, _saltsManager.CombineStaticAndDynamicSalts(dynamicSalt), IterationsNumber, _hashingAlgorithmName, PasswordHashLength);
     }
 
     private readonly ISaltsManager _saltsManager;
 
     private const int IterationsNumber = 100_000;
 
-    private static readonly HashAlgorithmName HashingAlgorithmName = HashAlgorithmName.SHA512;
+    private readonly HashAlgorithmName _hashingAlgorithmName = HashAlgorithmName.SHA512;
 
     private const int PasswordHashLength = 64;
 }

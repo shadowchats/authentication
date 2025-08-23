@@ -8,7 +8,7 @@
 
 using Shadowchats.Authentication.Core.Domain.Interfaces;
 
-namespace Shadowchats.Authentication.Infrastructure;
+namespace Shadowchats.Authentication.Infrastructure.Domain;
 
 public class GuidGenerator : IGuidGenerator
 {
