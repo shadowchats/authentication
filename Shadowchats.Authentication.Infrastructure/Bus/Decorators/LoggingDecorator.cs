@@ -35,7 +35,7 @@ internal class LoggingDecorator<TCommand, TResult> : ICommandHandler<TCommand, T
         }
         catch (BaseException expectedException)
         {
-            _logger.LogWarning(expectedException,
+            _logger.LogInformation(expectedException,
                 "Stage: {Stage}. CommandName: {CommandName}. HandlerName: {HandlerName}. Payload: {@Command}",
                 "ExpectedFailure", _commandName, _handlerName, command);
 
