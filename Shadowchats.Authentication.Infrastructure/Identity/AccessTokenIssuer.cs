@@ -15,21 +15,19 @@ internal class AccessTokenIssuer : IAccessTokenIssuer
 
     public string Issue(Guid accountId)
     {
-        var claims = new List<Claim>
-        {
-            new(JwtRegisteredClaimNames.Jti, accountId.ToString())
-        };
         var now = _dateTimeProvider.UtcNow;
         var tokenDescriptor = new SecurityTokenDescriptor
         {
-            Subject = new ClaimsIdentity(claims),
+            Subject = new ClaimsIdentity([
+                new Claim(JwtRegisteredClaimNames.Sub, accountId.ToString())
+            ]),
             Expires = now.AddMinutes(JwtSettings.TokenLifitimeInMinutes),
             IssuedAt = now,
             NotBefore = now,
             Issuer = _jwtSettings.Issuer,
             Audience = _jwtSettings.Audience,
             SigningCredentials = new SigningCredentials(new SymmetricSecurityKey(_jwtSettings.SecretKey),
-                SecurityAlgorithms.HmacSha256Signature)
+                SecurityAlgorithms.HmacSha256)
         };
 
         var tokenHandler = new JwtSecurityTokenHandler();
@@ -53,14 +51,14 @@ internal class AccessTokenIssuer : IAccessTokenIssuer
                 ClockSkew = TimeSpan.Zero,
                 ValidateIssuerSigningKey = true,
                 IssuerSigningKey = new SymmetricSecurityKey(_jwtSettings.SecretKey),
-                ValidAlgorithms = [SecurityAlgorithms.HmacSha256Signature]
+                ValidAlgorithms = [SecurityAlgorithms.HmacSha256]
             };
 
             var tokenHandler = new JwtSecurityTokenHandler();
             var principal = tokenHandler.ValidateToken(accessToken, validationParameters, out _);
-            var jtiClaim = principal.FindFirst(JwtRegisteredClaimNames.Jti)?.Value;
+            var subClaim = principal.FindFirst(ClaimTypes.NameIdentifier)?.Value;
 
-            return Guid.TryParse(jtiClaim, out accountId);
+            return Guid.TryParse(subClaim, out accountId);
         }
         catch
         {

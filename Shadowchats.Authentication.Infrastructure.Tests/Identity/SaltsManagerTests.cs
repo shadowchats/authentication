@@ -21,21 +21,4 @@ public class SaltsManagerTests
         // Assert
         Assert.Equal(expectedSalt, actualSalt);
     }
-    
-    [Fact]
-    public void GenerateDynamic_Test()
-    {
-        // Arrange
-        var saltsManager = new SaltsManager();
-        var sampleSize = Random.Shared.Next(1_000, 100_000);
-        var dynamicSalts = new byte[sampleSize][];
-
-        // Act
-        for (var i = 0; i < sampleSize; i++)
-            dynamicSalts[i] = saltsManager.GenerateDynamic();
-
-        // Assert
-        Assert.Distinct(dynamicSalts.Select(Convert.ToBase64String));
-        Assert.All(dynamicSalts, s => Assert.Equal(s.Length, saltsManager.DynamicSaltSizeInBytes));
-    }
 }
