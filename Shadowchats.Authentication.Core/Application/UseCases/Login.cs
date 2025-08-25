@@ -28,10 +28,9 @@ namespace Shadowchats.Authentication.Core.Application.UseCases
         
         internal class LoginHandler : ICommandHandler<LoginCommand, LoginResult>
         {
-            public LoginHandler(IAccountRepository accountRepository, ISessionRepository sessionRepository, IPasswordHasher passwordHasher, IGuidGenerator guidGenerator, IDateTimeProvider dateTimeProvider, IRefreshTokenGenerator refreshTokenGenerator, IAccessTokenIssuer accessTokenIssuer)
+            public LoginHandler(IAggregateRootsRepository aggregateRootsRepository, IPasswordHasher passwordHasher, IGuidGenerator guidGenerator, IDateTimeProvider dateTimeProvider, IRefreshTokenGenerator refreshTokenGenerator, IAccessTokenIssuer accessTokenIssuer)
             {
-                _accountRepository = accountRepository;
-                _sessionRepository = sessionRepository;
+                _aggregateRootsRepository = aggregateRootsRepository;
                 _passwordHasher = passwordHasher;
                 _guidGenerator = guidGenerator;
                 _dateTimeProvider = dateTimeProvider;
@@ -41,12 +40,12 @@ namespace Shadowchats.Authentication.Core.Application.UseCases
 
             public async Task<LoginResult> Handle(LoginCommand command)
             {
-                var account = await _accountRepository.GetByLogin(command.Login);
+                var account = await _aggregateRootsRepository.Find<Account>(a => a.Credentials.Login == command.Login);
                 if (account is null || !account.Credentials.Verify(_passwordHasher, command.Password))
                     throw new AuthenticationFailedException("Login and/or password is invalid.");
 
                 var session = Session.Create(_guidGenerator, _dateTimeProvider, _refreshTokenGenerator, account.Guid);
-                await _sessionRepository.Add(session);
+                await _aggregateRootsRepository.Add(session);
 
                 return new LoginResult
                 {
@@ -55,9 +54,7 @@ namespace Shadowchats.Authentication.Core.Application.UseCases
                 };
             }
 
-            private readonly IAccountRepository _accountRepository;
-
-            private readonly ISessionRepository _sessionRepository;
+            private readonly IAggregateRootsRepository _aggregateRootsRepository;
             
             private readonly IPasswordHasher _passwordHasher;
             

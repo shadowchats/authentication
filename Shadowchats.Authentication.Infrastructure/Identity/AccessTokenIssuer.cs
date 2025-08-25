@@ -13,11 +13,11 @@ internal class AccessTokenIssuer : IAccessTokenIssuer
         _dateTimeProvider = dateTimeProvider;
     }
 
-    public string Issue(Guid sessionId)
+    public string Issue(Guid accountId)
     {
         var claims = new List<Claim>
         {
-            new(JwtRegisteredClaimNames.Jti, sessionId.ToString())
+            new(JwtRegisteredClaimNames.Jti, accountId.ToString())
         };
         var now = _dateTimeProvider.UtcNow;
         var tokenDescriptor = new SecurityTokenDescriptor
@@ -37,9 +37,9 @@ internal class AccessTokenIssuer : IAccessTokenIssuer
         return tokenHandler.WriteToken(token);
     }
 
-    public bool TryParse(string accessToken, out Guid sessionId)
+    public bool TryParse(string accessToken, out Guid accountId)
     {
-        sessionId = Guid.Empty;
+        accountId = Guid.Empty;
 
         try
         {
@@ -60,7 +60,7 @@ internal class AccessTokenIssuer : IAccessTokenIssuer
             var principal = tokenHandler.ValidateToken(accessToken, validationParameters, out _);
             var jtiClaim = principal.FindFirst(JwtRegisteredClaimNames.Jti)?.Value;
 
-            return Guid.TryParse(jtiClaim, out sessionId);
+            return Guid.TryParse(jtiClaim, out accountId);
         }
         catch
         {

@@ -2,6 +2,6 @@
 
 internal interface IAccessTokenIssuer
 {
-    string Issue(Guid sessionId);
-    bool TryParse(string token, out Guid sessionId);
+    string Issue(Guid accountId);
+    bool TryParse(string token, out Guid accountId);
 }

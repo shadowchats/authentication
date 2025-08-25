@@ -1,5 +1,6 @@
 ﻿using Newtonsoft.Json;
 using Shadowchats.Authentication.Core.Application.Interfaces;
+using Shadowchats.Authentication.Core.Domain.Aggregates;
 
 namespace Shadowchats.Authentication.Core.Application.UseCases
 {
@@ -19,25 +20,24 @@ namespace Shadowchats.Authentication.Core.Application.UseCases
 
         internal class LogoutHandler : ICommandHandler<LogoutCommand, LogoutResult>
         {
-            public LogoutHandler(ISessionRepository sessionRepository)
+            public LogoutHandler(IAggregateRootsRepository aggregateRootsRepository)
             {
-                _sessionRepository = sessionRepository;
+                _aggregateRootsRepository = aggregateRootsRepository;
             }
 
             public async Task<LogoutResult> Handle(LogoutCommand command)
             {
-                (await _sessionRepository.GetByRefreshToken(command.RefreshToken))?.Revoke();
+                (await _aggregateRootsRepository.Find<Session>(s => s.RefreshToken == command.RefreshToken))?.Revoke();
 
-                return Result;
+                return new LogoutResult
+                {
+                    Message =
+                        "According to RFC 7009, the authorization server responds with an HTTP 200 OK status code " +
+                        "even if the token is invalid, expired, revoked, or was never issued."
+                };
             }
 
-            private readonly ISessionRepository _sessionRepository;
-
-            private static readonly LogoutResult Result = new()
-            {
-                Message = "According to RFC 7009, the authorization server responds with an HTTP 200 OK status code " +
-                          "even if the token is invalid, expired, revoked, or was never issued."
-            };
+            private readonly IAggregateRootsRepository _aggregateRootsRepository;
         }
     }
 }

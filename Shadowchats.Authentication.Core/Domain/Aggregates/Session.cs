@@ -31,7 +31,7 @@ internal class Session : AggregateRoot<Session>
         if (!IsActive || dateTimeProvider.UtcNow > ExpiresAt)
             throw new InvariantViolationException("Refresh token is invalid.");
         
-        return accessTokenIssuer.Issue(Guid);
+        return accessTokenIssuer.Issue(AccountId);
     }
     
     public Guid AccountId { get; }

@@ -3,13 +3,12 @@ using Shadowchats.Authentication.Core.Application.Interfaces;
 using Shadowchats.Authentication.Core.Domain.Aggregates;
 using Shadowchats.Authentication.Core.Domain.Exceptions;
 using Shadowchats.Authentication.Core.Domain.Interfaces;
-using Shadowchats.Authentication.Core.Domain.ValueObjects;
 
 namespace Shadowchats.Authentication.Core.Application.UseCases
 {
-    namespace RegisterAccount
+    namespace LogoutAll
     {
-        public class RegisterAccountCommand : ICommand<RegisterAccountResult>
+        public class LogoutAllCommand : ICommand<LogoutAllResult>
         {
             [JsonProperty(Required = Required.Always, PropertyName = "login")]
             public required string Login { get; init; }
@@ -18,40 +17,38 @@ namespace Shadowchats.Authentication.Core.Application.UseCases
             public required string Password { get; init; }
         }
         
-        public class RegisterAccountResult
+        public class LogoutAllResult
         {
             [JsonProperty(Required = Required.Always, PropertyName = "message")]
             public required string Message { get; init; }
         }
         
-        internal class RegisterAccountHandler : ICommandHandler<RegisterAccountCommand, RegisterAccountResult>
+        internal class LogoutAllHandler : ICommandHandler<LogoutAllCommand, LogoutAllResult>
         {
-            public RegisterAccountHandler(IAggregateRootsRepository aggregateRootsRepository, IPasswordHasher passwordHasher, IGuidGenerator guidGenerator)
+            public LogoutAllHandler(IAggregateRootsRepository aggregateRootsRepository, IPasswordHasher passwordHasher)
             {
                 _aggregateRootsRepository = aggregateRootsRepository;
                 _passwordHasher = passwordHasher;
-                _guidGenerator = guidGenerator;
             }
 
-            public async Task<RegisterAccountResult> Handle(RegisterAccountCommand command)
+            public async Task<LogoutAllResult> Handle(LogoutAllCommand command)
             {
-                if (await _aggregateRootsRepository.Exists<Account>(a => a.Credentials.Login == command.Login))
-                    throw new InvariantViolationException("Login and/or password is invalid.");
-                
-                await _aggregateRootsRepository.Add(Account.Create(_guidGenerator,
-                    Credentials.Create(_passwordHasher, command.Login, command.Password)));
+                var account = await _aggregateRootsRepository.Find<Account>(a => a.Credentials.Login == command.Login);
+                if (account is null || !account.Credentials.Verify(_passwordHasher, command.Password))
+                    throw new AuthenticationFailedException("Login and/or password is invalid.");
 
-                return new RegisterAccountResult
+                foreach (var session in await _aggregateRootsRepository.FindAll<Session>(s => s.AccountId == account.Guid && s.IsActive))
+                    session.Revoke();
+
+                return new LogoutAllResult
                 {
-                    Message = "Account registered."
+                    Message = "All active sessions revoked."
                 };
             }
 
             private readonly IAggregateRootsRepository _aggregateRootsRepository;
-            
+
             private readonly IPasswordHasher _passwordHasher;
-            
-            private readonly IGuidGenerator _guidGenerator;
         }
     }
 }
