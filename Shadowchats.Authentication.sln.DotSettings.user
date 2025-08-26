@@ -29,6 +29,7 @@
     &lt;TestId&gt;xUnit::E5CC1586-93D3-405E-9E40-58C17B3E14C1::net9.0::Shadowchats.Authentication.Infrastructure.Tests.Bus.CommandBusTests&lt;/TestId&gt;&#xD;
     &lt;TestId&gt;xUnit::E5CC1586-93D3-405E-9E40-58C17B3E14C1::net9.0::Shadowchats.Authentication.Infrastructure.Tests.Bus.Decorators.LoggingDecoratorTests&lt;/TestId&gt;&#xD;
     &lt;TestId&gt;xUnit::E5CC1586-93D3-405E-9E40-58C17B3E14C1::net9.0::Shadowchats.Authentication.Infrastructure.Tests.Bus.Decorators.UnitOfWorkDecoratorTests&lt;/TestId&gt;&#xD;
+    &lt;TestId&gt;xUnit::8E961272-2384-47A6-B05A-783C975ECDCD::net9.0::Shadowchats.Authentication.Core.Tests.Domain.Aggregates.SessionTests&lt;/TestId&gt;&#xD;
   &lt;/TestAncestor&gt;&#xD;
 &lt;/SessionState&gt;</s:String>
 	

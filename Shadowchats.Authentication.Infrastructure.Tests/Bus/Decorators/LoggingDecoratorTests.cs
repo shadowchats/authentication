@@ -10,7 +10,7 @@ namespace Shadowchats.Authentication.Infrastructure.Tests.Bus.Decorators;
 public class LoggingDecoratorTests
 {
     [Fact]
-    public async Task Handle_Success_LogsStartAndSuccess()
+    public async Task Handle_StartAndSuccess_Test()
     {
         // Arrange
         var command = new TestCommand { Data = "test" };
@@ -29,14 +29,13 @@ public class LoggingDecoratorTests
         // Assert
         Assert.Equal(expectedResult, result);
         
-        // Verify logging calls
         VerifyLog(logger, LogLevel.Information, "Stage: Start");
         VerifyLog(logger, LogLevel.Information, "Stage: Success");
         decoratedHandler.Verify(h => h.Handle(command), Times.Once);
     }
     
     [Fact]
-    public async Task Handle_BaseException_LogsExpectedFailure()
+    public async Task Handle_ExpectedFailure_Test()
     {
         // Arrange
         var command = new TestCommand();
@@ -58,7 +57,7 @@ public class LoggingDecoratorTests
     }
     
     [Fact]
-    public async Task Handle_UnexpectedException_LogsUnexpectedFailure()
+    public async Task Handle_UnexpectedFailure_Test()
     {
         // Arrange
         var command = new TestCommand();

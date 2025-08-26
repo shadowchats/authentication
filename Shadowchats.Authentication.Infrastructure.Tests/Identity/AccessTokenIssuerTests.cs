@@ -96,5 +96,7 @@ public class AccessTokenIssuerTests
         // Assert
         Assert.True(actualResult);
         Assert.Equal(expectedAccountId, actualAccountId);
+        
+        dateTimeProvider.Verify(dtp => dtp.UtcNow, Times.Once);
     }
 }

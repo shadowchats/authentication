@@ -5,9 +5,9 @@ using Shadowchats.Authentication.Core.Domain.Base;
 
 namespace Shadowchats.Authentication.Infrastructure.Persistence;
 
-internal class AggregatesRootRepository : IAggregateRootsRepository
+internal class AggregateRootsRepository : IAggregateRootsRepository
 {
-    public AggregatesRootRepository(AuthenticationDbContext dbContext) => _dbContext = dbContext;
+    public AggregateRootsRepository(AuthenticationDbContext dbContext) => _dbContext = dbContext;
 
     public Task<T?> Find<T>(Expression<Func<T, bool>> predicate) where T : AggregateRoot<T> =>
         _dbContext.Set<T>().FirstOrDefaultAsync(predicate);

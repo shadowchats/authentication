@@ -33,7 +33,7 @@ public class CommandBusTests
     }
     
     [Fact]
-    public async Task Execute_HandlerNotRegistered_ThrowsException()
+    public async Task Execute_InvalidOperationException_Test()
     {
         // Arrange
         var command = new TestCommand { Data = "input" };

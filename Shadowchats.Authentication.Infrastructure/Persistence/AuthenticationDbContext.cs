@@ -33,10 +33,49 @@ internal class AuthenticationDbContext(DbContextOptions options) : DbContext(opt
             builder.Ignore(x => x.DomainEvents);
         }
     }
+    
+    private class SessionEntityTypeConfiguration : IEntityTypeConfiguration<Session>
+    {
+        public void Configure(EntityTypeBuilder<Session> builder)
+        {
+            builder.ToTable("Sessions");
+
+            builder.HasKey(x => x.Guid);
+            builder.Property(x => x.Guid).HasColumnName("Id");
+
+            builder.Property(x => x.AccountId)
+                .IsRequired();
+
+            builder.Property(x => x.ExpiresAt)
+                .IsRequired();
+
+            builder.Property(x => x.RefreshToken)
+                .IsRequired();
+
+            builder.Property(x => x.IsActive)
+                .IsRequired();
+
+            builder.Ignore(x => x.DomainEvents);
+
+            builder.HasIndex(x => x.RefreshToken)
+                .IsUnique()
+                .HasDatabaseName("IX_Sessions_RefreshToken");
+
+            builder.HasIndex(x => x.AccountId)
+                .HasDatabaseName("IX_Sessions_AccountId");
+
+            builder.HasOne<Account>()
+                .WithMany()
+                .HasForeignKey(x => x.AccountId)
+                .OnDelete(DeleteBehavior.Cascade) // при удалении аккаунта удаляются сессии
+                .IsRequired();
+        }
+    }
         
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
         modelBuilder.ApplyConfiguration(new AccountEntityTypeConfiguration());
+        modelBuilder.ApplyConfiguration(new SessionEntityTypeConfiguration());
         base.OnModelCreating(modelBuilder);
     }
 

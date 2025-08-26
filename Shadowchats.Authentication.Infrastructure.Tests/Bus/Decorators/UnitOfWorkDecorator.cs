@@ -9,7 +9,7 @@ namespace Shadowchats.Authentication.Infrastructure.Tests.Bus.Decorators;
 public class UnitOfWorkDecoratorTests
 {
     [Fact]
-    public async Task Handle_Success_CommitsTransaction()
+    public async Task Handle_Commit_Test()
     {
         // Arrange
         var command = new TestCommand();
@@ -34,12 +34,13 @@ public class UnitOfWorkDecoratorTests
         unitOfWork.InSequence(sequence).Setup(uow => uow.Commit());
         
         unitOfWork.Verify(uow => uow.Begin(), Times.Once);
+        decoratedHandler.Verify(dh => dh.Handle(command), Times.Once);
         unitOfWork.Verify(uow => uow.Commit(), Times.Once);
         unitOfWork.Verify(uow => uow.Rollback(), Times.Never);
     }
     
     [Fact]
-    public async Task Handle_Exception_RollsBackTransaction()
+    public async Task Handle_Rollback_Test()
     {
         // Arrange
         var command = new TestCommand();
