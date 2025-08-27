@@ -6,27 +6,25 @@
 // (at your option) any later version. See the LICENSE file for details.
 // For full copyright and authorship information, see the COPYRIGHT file.
 
-using Shadowchats.Authentication.Presentation.Services;
+using Shadowchats.Authentication.Core.Extensions;
+using Shadowchats.Authentication.Infrastructure.Extensions;
 
 namespace Shadowchats.Authentication.Presentation;
 
-public class Program
+public static class Program
 {
     public static void Main(string[] args)
     {
         var builder = WebApplication.CreateBuilder(args);
 
-        // Add services to the container.
         builder.Services.AddGrpc();
+        builder.Services.AddApplication();
+        //builder.Services.AddInfrastructure();
 
         var app = builder.Build();
 
-        // Configure the HTTP request pipeline.
-        app.MapGrpcService<GreeterService>();
-        app.MapGet("/",
-            () =>
-                "Communication with gRPC endpoints must be made through a gRPC client. To learn how to create a client, visit: https://go.microsoft.com/fwlink/?linkid=2086909");
-
+        //app.MapGrpcService<AuthenticationService>();
+        
         app.Run();
     }
 }

@@ -8,11 +8,21 @@
     </PropertyGroup>
 
     <ItemGroup>
-        <Protobuf Include="Protos\greet.proto" GrpcServices="Server"/>
+        <Protobuf Include="Protos\authentication_service.proto" GrpcServices="Server" />
     </ItemGroup>
 
     <ItemGroup>
+        <PackageReference Include="Google.Protobuf" Version="3.32.0" />
         <PackageReference Include="Grpc.AspNetCore" Version="2.64.0"/>
+        <PackageReference Include="Grpc.Tools" Version="2.72.0">
+          <PrivateAssets>all</PrivateAssets>
+          <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+        </PackageReference>
+    </ItemGroup>
+
+    <ItemGroup>
+      <ProjectReference Include="..\Shadowchats.Authentication.Core\Shadowchats.Authentication.Core.csproj" />
+      <ProjectReference Include="..\Shadowchats.Authentication.Infrastructure\Shadowchats.Authentication.Infrastructure.csproj" />
     </ItemGroup>
 
 </Project>
