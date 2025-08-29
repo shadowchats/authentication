@@ -8,16 +8,17 @@
 
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
+using Microsoft.Extensions.Options;
 using Microsoft.IdentityModel.Tokens;
 using Shadowchats.Authentication.Core.Domain.Interfaces;
 
 namespace Shadowchats.Authentication.Infrastructure.Identity;
 
-internal class AccessTokenIssuer : IAccessTokenIssuer
+public class AccessTokenIssuer : IAccessTokenIssuer
 {
-    public AccessTokenIssuer(JwtSettings jwtSettings, IDateTimeProvider dateTimeProvider)
+    public AccessTokenIssuer(IOptions<JwtSettings> options, IDateTimeProvider dateTimeProvider)
     {
-        _jwtSettings = jwtSettings;
+        _jwtSettings = options.Value;
         _dateTimeProvider = dateTimeProvider;
     }
 

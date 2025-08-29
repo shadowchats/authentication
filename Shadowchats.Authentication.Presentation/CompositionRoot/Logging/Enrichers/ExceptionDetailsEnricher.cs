@@ -8,11 +8,11 @@
 
 using Serilog.Core;
 using Serilog.Events;
-using Shadowchats.Authentication.Infrastructure.Extensions;
+using Shadowchats.Authentication.Presentation.CompositionRoot.Extensions;
 
-namespace Shadowchats.Authentication.Infrastructure.Logging.Enrichers;
+namespace Shadowchats.Authentication.Presentation.CompositionRoot.Logging.Enrichers;
 
-internal class ExceptionDetailsEnricher : ILogEventEnricher
+public class ExceptionDetailsEnricher : ILogEventEnricher
 {
     public void Enrich(LogEvent logEvent, ILogEventPropertyFactory propertyFactory)
     {

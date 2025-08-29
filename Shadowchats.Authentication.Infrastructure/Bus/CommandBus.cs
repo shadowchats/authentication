@@ -11,7 +11,7 @@ using Shadowchats.Authentication.Core.Application.Interfaces;
 
 namespace Shadowchats.Authentication.Infrastructure.Bus;
 
-internal class CommandBus : ICommandBus
+public class CommandBus : ICommandBus
 {
     public CommandBus(IServiceProvider services)
     {

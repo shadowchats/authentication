@@ -8,7 +8,7 @@
 
 namespace Shadowchats.Authentication.Infrastructure.Persistence;
 
-internal interface IUnitOfWork
+public interface IUnitOfWork
 {
     Task Begin();
     Task Commit();

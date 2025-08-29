@@ -8,11 +8,11 @@
 
 using Serilog;
 using Serilog.Configuration;
-using Shadowchats.Authentication.Infrastructure.Logging.Enrichers;
+using Shadowchats.Authentication.Presentation.CompositionRoot.Logging.Enrichers;
 
-namespace Shadowchats.Authentication.Infrastructure.Extensions;
+namespace Shadowchats.Authentication.Presentation.CompositionRoot.Extensions;
 
-internal static class LoggerEnrichmentConfigurationExtensions
+public static class LoggerEnrichmentConfigurationExtensions
 {
-    internal static LoggerConfiguration WithExceptionDetails(this LoggerEnrichmentConfiguration enrich) => enrich.With<ExceptionDetailsEnricher>();
+    public static LoggerConfiguration WithExceptionDetails(this LoggerEnrichmentConfiguration enrich) => enrich.With<ExceptionDetailsEnricher>();
 }

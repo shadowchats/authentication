@@ -7,11 +7,9 @@
 // For full copyright and authorship information, see the COPYRIGHT file.
 
 using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.Configuration;
-using Microsoft.Extensions.DependencyInjection;
 using Serilog;
+using Serilog.Enrichers.Span;
 using Shadowchats.Authentication.Core.Application.Interfaces;
-using Shadowchats.Authentication.Core.Domain.Exceptions;
 using Shadowchats.Authentication.Core.Domain.Interfaces;
 using Shadowchats.Authentication.Infrastructure.Bus;
 using Shadowchats.Authentication.Infrastructure.Bus.Decorators;
@@ -19,31 +17,16 @@ using Shadowchats.Authentication.Infrastructure.Identity;
 using Shadowchats.Authentication.Infrastructure.Persistence;
 using Shadowchats.Authentication.Infrastructure.System;
 
-namespace Shadowchats.Authentication.Infrastructure.Extensions;
+namespace Shadowchats.Authentication.Presentation.CompositionRoot.Extensions;
 
 public static class ServiceCollectionExtensions
 {
-    public static IServiceCollection AddInfrastructure(this IServiceCollection services, IConfiguration configuration) => services
-        .AddLogging()
+    public static IServiceCollection
+        AddInfrastructure(this IServiceCollection services, IConfiguration configuration) => services
         .AddBus()
         .AddPersistence(configuration)
         .AddSystem()
-        .AddIdentity()
-        .AddHostedService<InfrastructureCleanupService>();
-    
-    private static IServiceCollection AddLogging(this IServiceCollection services)
-    {
-        Log.Logger = new LoggerConfiguration()
-            .Enrich.FromLogContext()
-            .Enrich.WithExceptionDetails()
-            .MinimumLevel.Information()
-            .WriteTo.Async(c => c.Console())
-            .CreateLogger();
-
-        services.AddSerilog();
-
-        return services;
-    }
+        .AddIdentity(configuration);
     
     private static IServiceCollection AddBus(this IServiceCollection services)
     {
@@ -57,21 +40,9 @@ public static class ServiceCollectionExtensions
 
     private static IServiceCollection AddPersistence(this IServiceCollection services, IConfiguration configuration)
     {
-        var persistence = configuration.GetSection("Persistence");
-        if (!persistence.Exists())
-            throw new BugException("Configuration -> section \"Persistence\" not found.");
-        var connectionString = persistence.GetValue<string>("PostgreConnectionString");
-        if (connectionString == null)
-            throw new BugException("Configuration -> key \"Persistence.PostgreConnectionString\" not found.");
-        
-        Action<DbContextOptionsBuilder> optionsAction = options => options.UseNpgsql(connectionString);
-        var dbContextOptionsBuilder = new DbContextOptionsBuilder();
-        optionsAction(dbContextOptionsBuilder);
+        services.AddDbContext<AuthenticationDbContext>(options =>
+            options.UseNpgsql(configuration.GetValue<string>("Persistence:PostgreConnectionString")));
 
-        using var testDbContext = new AuthenticationDbContext(dbContextOptionsBuilder.Options);
-        testDbContext.Database.EnsureCreated();
-
-        services.AddDbContext<AuthenticationDbContext>(optionsAction);
         services.AddScoped<IUnitOfWork, UnitOfWork>();
         services.AddScoped<IAggregateRootsRepository, AggregateRootsRepository>();
         
@@ -86,12 +57,38 @@ public static class ServiceCollectionExtensions
         return services;
     }
     
-    private static IServiceCollection AddIdentity(this IServiceCollection services)
+    private static IServiceCollection AddIdentity(this IServiceCollection services, IConfiguration configuration)
     {
+        services.Configure<JwtSettings>(configuration.GetSection("Identity:JwtSettings"));
+        services.PostConfigure<JwtSettings>(opts =>
+            opts.SecretKey = Convert.FromBase64String(configuration["Identity:JwtSettings:SecretKey"]!));
+        
         services.AddSingleton<IRefreshTokenGenerator, RefreshTokenGenerator>();
         services.AddSingleton<IAccessTokenIssuer, AccessTokenIssuer>();
+        services.AddSingleton<ISaltsManager, SaltsManager>();
         services.AddSingleton<IPasswordHasher, PasswordHasher>();
         
+        return services;
+    }
+    
+    public static IServiceCollection AddApplication(this IServiceCollection services) => services.Scan(scan => scan
+        .FromAssemblyOf<ICommandBus>()
+        .AddClasses(c => c.AssignableTo(typeof(ICommandHandler<,>)))
+        .AsImplementedInterfaces()
+        .WithScopedLifetime());
+    
+    public static IServiceCollection AddCustomLogging(this IServiceCollection services)
+    {
+        Log.Logger = new LoggerConfiguration()
+            .Enrich.FromLogContext()
+            .Enrich.WithExceptionDetails()
+            .Enrich.WithSpan()
+            .MinimumLevel.Information()
+            .WriteTo.Async(c => c.Console(new Serilog.Formatting.Json.JsonFormatter()))
+            .CreateLogger();
+
+        services.AddSerilog();
+
         return services;
     }
 }

@@ -6,7 +6,6 @@
 // (at your option) any later version. See the LICENSE file for details.
 // For full copyright and authorship information, see the COPYRIGHT file.
 
-using Newtonsoft.Json;
 using Shadowchats.Authentication.Core.Application.Interfaces;
 using Shadowchats.Authentication.Core.Domain.Aggregates;
 using Shadowchats.Authentication.Core.Domain.Exceptions;
@@ -18,17 +17,15 @@ namespace Shadowchats.Authentication.Core.Application.UseCases
     {
         public class GenerateAccessTokenCommand : ICommand<GenerateAccessTokenResult>
         {
-            [JsonProperty(Required = Required.Always, PropertyName = "refreshToken")]
             public required string RefreshToken { get; init; }
         }
         
         public class GenerateAccessTokenResult
         {
-            [JsonProperty(Required = Required.Always, PropertyName = "accessToken")]
             public required string AccessToken { get; init; }
         }
         
-        internal class GenerateAccessTokenHandler : ICommandHandler<GenerateAccessTokenCommand, GenerateAccessTokenResult>
+        public class GenerateAccessTokenHandler : ICommandHandler<GenerateAccessTokenCommand, GenerateAccessTokenResult>
         {
             public GenerateAccessTokenHandler(IAggregateRootsRepository aggregateRootsRepository, IDateTimeProvider dateTimeProvider, IAccessTokenIssuer accessTokenIssuer)
             {

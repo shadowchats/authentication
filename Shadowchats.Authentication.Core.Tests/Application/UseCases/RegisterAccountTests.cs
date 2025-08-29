@@ -40,10 +40,10 @@ public class RegisterAccountTests
         var repository = new Mock<IAggregateRootsRepository>();
         repository.Setup(r => r.Exists(It.IsAny<Expression<Func<Account, bool>>>())).ReturnsAsync(false);
 
-        var handler = new RegisterAccountHandler(repository.Object, Mock.Of<IPasswordHasher>(), Mock.Of<IGuidGenerator>());
+        var handler = new RegisterAccountHandler(repository.Object, Mock.Of<IPasswordHasher>(), Mock.Of<IGuidGenerator>(j => j.Generate() == Guid.NewGuid()));
         
         // Act
-        var result = await handler.Handle(new RegisterAccountCommand { Login = "login", Password = "pass" });
+        var result = await handler.Handle(new RegisterAccountCommand { Login = "login", Password = "pass37tdjr6!#6cvjGgg" });
 
         // Assert
         Assert.Equal("Account registered.", result.Message);

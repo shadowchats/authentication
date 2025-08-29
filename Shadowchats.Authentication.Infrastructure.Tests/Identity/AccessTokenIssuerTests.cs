@@ -6,6 +6,7 @@
 // (at your option) any later version. See the LICENSE file for details.
 // For full copyright and authorship information, see the COPYRIGHT file.
 
+using Microsoft.Extensions.Options;
 using Moq;
 using Shadowchats.Authentication.Core.Domain.Interfaces;
 using Shadowchats.Authentication.Infrastructure.Identity;
@@ -18,12 +19,12 @@ public class AccessTokenIssuerTests
     public void TryParse_True_Test()
     {
         // Arrange
-        var jwtSettings = new JwtSettings
+        var jwtSettings = Options.Create(new JwtSettings
         {
             SecretKey = Convert.FromBase64String("NjJPS3QyVk10aGdueU9HQ1VhekxpNmV6THlmZGFDcTk="),
             Issuer = "Test",
             Audience = "Test"
-        };
+        });
         var expectedAccountId = Guid.Parse("7e801397-2c65-4748-be5b-7d4062e564db");
         
         /*
@@ -64,12 +65,12 @@ public class AccessTokenIssuerTests
     public void TryParse_False_Test(string accessToken)
     {
         // Arrange
-        var jwtSettings = new JwtSettings
+        var jwtSettings = Options.Create(new JwtSettings
         {
             SecretKey = Convert.FromBase64String("NjJPS3QyVk10aGdueU9HQ1VhekxpNmV6THlmZGFDcTk="),
             Issuer = "Test",
             Audience = "Test"
-        };
+        });
         
         var accessTokenIssuer = new AccessTokenIssuer(jwtSettings, Mock.Of<IDateTimeProvider>());
 
@@ -84,12 +85,12 @@ public class AccessTokenIssuerTests
     public void Issue_Test()
     {
         // Arrange
-        var jwtSettings = new JwtSettings
+        var jwtSettings = Options.Create(new JwtSettings
         {
             SecretKey = Convert.FromBase64String("NjJPS3QyVk10aGdueU9HQ1VhekxpNmV6THlmZGFDcTk="),
             Issuer = "Test",
             Audience = "Test"
-        };
+        });
         var expectedAccountId = Guid.Parse("7e801397-2c65-4748-be5b-7d4062e564db");
         
         var dateTimeProvider = new Mock<IDateTimeProvider>();

@@ -12,7 +12,7 @@ using Shadowchats.Authentication.Core.Domain.Aggregates;
 
 namespace Shadowchats.Authentication.Infrastructure.Persistence;
 
-internal class AuthenticationDbContext(DbContextOptions options) : DbContext(options)
+public class AuthenticationDbContext(DbContextOptions options) : DbContext(options)
 {
     private class AccountEntityTypeConfiguration : IEntityTypeConfiguration<Account>
     {
@@ -87,7 +87,7 @@ internal class AuthenticationDbContext(DbContextOptions options) : DbContext(opt
         base.OnModelCreating(modelBuilder);
     }
 
-    public DbSet<Account> Accounts { get; set; } = null!;
+    internal DbSet<Account> Accounts { get; set; } = null!;
         
-    public DbSet<Session> Sesssions { get; set; } = null!;
+    internal DbSet<Session> Sesssions { get; set; } = null!;
 }

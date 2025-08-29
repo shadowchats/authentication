@@ -10,12 +10,12 @@ using Shadowchats.Authentication.Core.Domain.Exceptions;
 
 namespace Shadowchats.Authentication.Infrastructure.Identity;
 
-internal class JwtSettings
+public class JwtSettings
 {
     public required byte[] SecretKey
     {
         get => _secretKey;
-        init
+        set
         {
             if (value.Length < 32)
                 throw new BugException("JWT SecretKey must be at least 32 bytes.");
@@ -23,12 +23,12 @@ internal class JwtSettings
             _secretKey = value;
         }
     }
-    private readonly byte[] _secretKey = null!;
+    private byte[] _secretKey = null!;
         
     public required string Issuer
     {
         get => _issuer;
-        init
+        set
         {
             if (string.IsNullOrWhiteSpace(value))
                 throw new BugException("JWT Issuer is required.");
@@ -36,12 +36,12 @@ internal class JwtSettings
             _issuer = value;
         }
     }
-    private readonly string _issuer = null!;
+    private string _issuer = null!;
         
     public required string Audience
     {
         get => _audience;
-        init
+        set
         {
             if (string.IsNullOrWhiteSpace(value))
                 throw new BugException("JWT Audience is required.");
@@ -49,7 +49,7 @@ internal class JwtSettings
             _audience = value;
         }
     }
-    private readonly string _audience = null!;
+    private string _audience = null!;
         
     public const int TokenLifitimeInMinutes = 15;
 }

@@ -8,7 +8,7 @@
 
 namespace Shadowchats.Authentication.Infrastructure.Identity;
 
-internal interface ISaltsManager
+public interface ISaltsManager
 {
     byte[] GenerateDynamic();
 

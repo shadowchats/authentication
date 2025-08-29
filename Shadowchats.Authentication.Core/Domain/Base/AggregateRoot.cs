@@ -8,4 +8,4 @@
 
 namespace Shadowchats.Authentication.Core.Domain.Base;
 
-internal abstract class AggregateRoot<TAggregateRoot>(Guid guid) : Entity<TAggregateRoot>(guid) where TAggregateRoot : AggregateRoot<TAggregateRoot>;
+public abstract class AggregateRoot<TAggregateRoot>(Guid guid) : Entity<TAggregateRoot>(guid) where TAggregateRoot : AggregateRoot<TAggregateRoot>;

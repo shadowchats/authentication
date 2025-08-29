@@ -6,7 +6,6 @@
 // (at your option) any later version. See the LICENSE file for details.
 // For full copyright and authorship information, see the COPYRIGHT file.
 
-using Newtonsoft.Json;
 using Shadowchats.Authentication.Core.Application.Interfaces;
 using Shadowchats.Authentication.Core.Domain.Aggregates;
 using Shadowchats.Authentication.Core.Domain.Exceptions;
@@ -19,20 +18,17 @@ namespace Shadowchats.Authentication.Core.Application.UseCases
     {
         public class RegisterAccountCommand : ICommand<RegisterAccountResult>
         {
-            [JsonProperty(Required = Required.Always, PropertyName = "login")]
             public required string Login { get; init; }
             
-            [JsonProperty(Required = Required.Always, PropertyName = "password")]
             public required string Password { get; init; }
         }
         
         public class RegisterAccountResult
         {
-            [JsonProperty(Required = Required.Always, PropertyName = "message")]
             public required string Message { get; init; }
         }
         
-        internal class RegisterAccountHandler : ICommandHandler<RegisterAccountCommand, RegisterAccountResult>
+        public class RegisterAccountHandler : ICommandHandler<RegisterAccountCommand, RegisterAccountResult>
         {
             public RegisterAccountHandler(IAggregateRootsRepository aggregateRootsRepository, IPasswordHasher passwordHasher, IGuidGenerator guidGenerator)
             {

@@ -10,7 +10,7 @@ using Shadowchats.Authentication.Core.Domain.Base;
 
 namespace Shadowchats.Authentication.Core.Domain.Interfaces;
 
-internal interface IGuidGenerator : IInfrastructureService
+public interface IGuidGenerator
 {
     Guid Generate();
 }

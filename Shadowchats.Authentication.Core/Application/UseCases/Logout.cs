@@ -6,7 +6,6 @@
 // (at your option) any later version. See the LICENSE file for details.
 // For full copyright and authorship information, see the COPYRIGHT file.
 
-using Newtonsoft.Json;
 using Shadowchats.Authentication.Core.Application.Interfaces;
 using Shadowchats.Authentication.Core.Domain.Aggregates;
 
@@ -16,17 +15,15 @@ namespace Shadowchats.Authentication.Core.Application.UseCases
     {
         public class LogoutCommand : ICommand<LogoutResult>
         {
-            [JsonProperty(Required = Required.Always, PropertyName = "refreshToken")]
             public required string RefreshToken { get; init; }
         }
         
         public class LogoutResult
         {
-            [JsonProperty(Required = Required.Always, PropertyName = "message")]
             public required string Message { get; init; }
         }
 
-        internal class LogoutHandler : ICommandHandler<LogoutCommand, LogoutResult>
+        public class LogoutHandler : ICommandHandler<LogoutCommand, LogoutResult>
         {
             public LogoutHandler(IAggregateRootsRepository aggregateRootsRepository)
             {

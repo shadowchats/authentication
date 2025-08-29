@@ -8,4 +8,4 @@
 
 namespace Shadowchats.Authentication.Core.Domain.Base;
 
-internal interface IDomainEvent;
+public interface IDomainEvent;

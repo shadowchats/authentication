@@ -12,7 +12,7 @@ using Shadowchats.Authentication.Core.Domain.Exceptions;
 
 namespace Shadowchats.Authentication.Infrastructure.Bus.Decorators;
 
-internal class LoggingDecorator<TCommand, TResult> : ICommandHandler<TCommand, TResult>
+public class LoggingDecorator<TCommand, TResult> : ICommandHandler<TCommand, TResult>
     where TCommand : ICommand<TResult>
 {
     public LoggingDecorator(
@@ -41,7 +41,7 @@ internal class LoggingDecorator<TCommand, TResult> : ICommandHandler<TCommand, T
 
             return result;
         }
-        catch (BaseException expectedException)
+        catch (BaseException expectedException) when (expectedException is not BugException)
         {
             _logger.LogInformation(expectedException,
                 "Stage: {Stage}. CommandName: {CommandName}. HandlerName: {HandlerName}. Payload: {@Command}",

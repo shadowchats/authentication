@@ -6,25 +6,16 @@
 // (at your option) any later version. See the LICENSE file for details.
 // For full copyright and authorship information, see the COPYRIGHT file.
 
-using Shadowchats.Authentication.Core.Extensions;
-using Shadowchats.Authentication.Infrastructure.Extensions;
+using Shadowchats.Authentication.Presentation.CompositionRoot;
 
 namespace Shadowchats.Authentication.Presentation;
 
 public static class Program
 {
-    public static void Main(string[] args)
+    public static void Main()
     {
-        var builder = WebApplication.CreateBuilder(args);
+        var app = CustomApplicationBuilder.Build();
 
-        builder.Services.AddGrpc();
-        builder.Services.AddApplication();
-        //builder.Services.AddInfrastructure();
-
-        var app = builder.Build();
-
-        //app.MapGrpcService<AuthenticationService>();
-        
         app.Run();
     }
 }

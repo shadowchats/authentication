@@ -13,7 +13,7 @@ using Shadowchats.Authentication.Core.Domain.Base;
 
 namespace Shadowchats.Authentication.Infrastructure.Persistence;
 
-internal class AggregateRootsRepository : IAggregateRootsRepository
+public class AggregateRootsRepository : IAggregateRootsRepository
 {
     public AggregateRootsRepository(AuthenticationDbContext dbContext) => _dbContext = dbContext;
 

@@ -11,7 +11,7 @@ using Shadowchats.Authentication.Core.Domain.Base;
 
 namespace Shadowchats.Authentication.Core.Application.Interfaces;
 
-internal interface IAggregateRootsRepository
+public interface IAggregateRootsRepository
 {
     Task<T?> Find<T>(Expression<Func<T, bool>> predicate) where T : AggregateRoot<T>;
     

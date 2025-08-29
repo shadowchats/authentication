@@ -8,7 +8,10 @@
 
 using Grpc.Core;
 using Shadowchats.Authentication.Core.Application.Interfaces;
+using Shadowchats.Authentication.Core.Application.UseCases.GenerateAccessToken;
 using Shadowchats.Authentication.Core.Application.UseCases.Login;
+using Shadowchats.Authentication.Core.Application.UseCases.Logout;
+using Shadowchats.Authentication.Core.Application.UseCases.LogoutAll;
 using Shadowchats.Authentication.Core.Application.UseCases.RegisterAccount;
 using Shadowchats.Authentication.Presentation.Grpc;
 
@@ -56,17 +59,48 @@ public class AuthenticationGrpcService : AuthenticationService.AuthenticationSer
 
     public override async Task<GenerateAccessTokenResponse> GenerateAccessToken(GenerateAccessTokenRequest request, ServerCallContext context)
     {
-        return await base.GenerateAccessToken(request, context);
+        var command = new GenerateAccessTokenCommand
+        {
+            RefreshToken = request.RefreshToken
+        };
+
+        var result = await _commandBus.Execute<GenerateAccessTokenCommand, GenerateAccessTokenResult>(command);
+
+        return new GenerateAccessTokenResponse
+        {
+            AccessToken = result.AccessToken
+        };
     }
 
     public override async Task<LogoutResponse> Logout(LogoutRequest request, ServerCallContext context)
     {
-        return await base.Logout(request, context);
+        var command = new LogoutCommand
+        {
+            RefreshToken = request.RefreshToken
+        };
+
+        var result = await _commandBus.Execute<LogoutCommand, LogoutResult>(command);
+
+        return new LogoutResponse
+        {
+            Message = result.Message
+        };
     }
 
     public override async Task<LogoutAllResponse> LogoutAll(LogoutAllRequest request, ServerCallContext context)
     {
-        return await base.LogoutAll(request, context);
+        var command = new LogoutAllCommand
+        {
+            Login = request.Login,
+            Password = request.Password
+        };
+
+        var result = await _commandBus.Execute<LogoutAllCommand, LogoutAllResult>(command);
+
+        return new LogoutAllResponse
+        {
+            Message = result.Message
+        };
     }
 
     private readonly ICommandBus _commandBus;

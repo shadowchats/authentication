@@ -9,9 +9,9 @@
 using System.Diagnostics;
 using Shadowchats.Authentication.Core.Domain.Exceptions;
 
-namespace Shadowchats.Authentication.Infrastructure.Extensions;
+namespace Shadowchats.Authentication.Presentation.CompositionRoot.Extensions;
 
-internal static class ExceptionExtensions
+public static class ExceptionExtensions
 {
     public static string GetLocation(this Exception exception)
     {

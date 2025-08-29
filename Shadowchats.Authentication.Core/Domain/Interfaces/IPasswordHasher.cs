@@ -10,7 +10,7 @@ using Shadowchats.Authentication.Core.Domain.Base;
 
 namespace Shadowchats.Authentication.Core.Domain.Interfaces;
 
-internal interface IPasswordHasher : IInfrastructureService
+public interface IPasswordHasher
 {
     string Hash(string password);
     bool Verify(string dynamicSaltAndPasswordHash, string password);
