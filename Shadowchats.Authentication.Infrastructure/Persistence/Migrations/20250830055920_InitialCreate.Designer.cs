@@ -12,7 +12,7 @@ using Shadowchats.Authentication.Infrastructure.Persistence;
 namespace Shadowchats.Authentication.Infrastructure.Persistence.Migrations
 {
     [DbContext(typeof(AuthenticationDbContext))]
-    [Migration("20250830041701_InitialCreate")]
+    [Migration("20250830055920_InitialCreate")]
     partial class InitialCreate
     {
         /// <inheritdoc />

@@ -1,4 +1,5 @@
-﻿using Grpc.Core;
+﻿using System.Diagnostics;
+using Grpc.Core;
 using Grpc.Core.Interceptors;
 using Shadowchats.Authentication.Core.Domain.Exceptions;
 
@@ -23,13 +24,9 @@ public class ExceptionHandlingGrpcInterceptor : Interceptor
         {
             throw new RpcException(new Status(StatusCode.Unauthenticated, ex.Message));
         }
-        catch (Exception ex)
+        catch
         {
-            throw new RpcException(new Status(StatusCode.Internal, "Произошла внутренняя ошибка сервера"));
+            throw new RpcException(new Status(StatusCode.Internal, $"An internal server error occurred. Please provide the trace ID \"{Activity.Current?.TraceId.ToString()}\" to the support team."));
         }
     }
-
-    private static string ExpectedError(string message) => $"{{\"message\":\"{message}\"}}";
-    
-    private static string UnexpectedError() => $"{{\"message\":\"An internal server error has occurred. Please contact technical support.\",\"trace_id\":}}";
 }
