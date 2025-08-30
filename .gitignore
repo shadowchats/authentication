@@ -1,7 +1,13 @@
 ﻿**/bin/
 **/obj/
+
+
 .idea/
+
 Shadowchats.Authentication.sln.DotSettings.user
-global.json
-*.json
+
+
 Shadowchats.Authentication.Presentation/Properties
+
+*.json
+*.pfx

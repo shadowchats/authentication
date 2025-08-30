@@ -6,6 +6,7 @@
 // (at your option) any later version. See the LICENSE file for details.
 // For full copyright and authorship information, see the COPYRIGHT file.
 
+using JetBrains.Annotations;
 using Shadowchats.Authentication.Core.Domain.Base;
 using Shadowchats.Authentication.Core.Domain.Exceptions;
 using Shadowchats.Authentication.Core.Domain.Interfaces;
@@ -14,6 +15,9 @@ namespace Shadowchats.Authentication.Core.Domain.Aggregates;
 
 internal class Session : AggregateRoot<Session>
 {
+    [UsedImplicitly]
+    private Session() { }
+    
     public static Session Create(IGuidGenerator guidGenerator, IDateTimeProvider dateTimeProvider, IRefreshTokenGenerator refreshTokenGenerator,
         Guid accountId) => new(guidGenerator.Generate(), accountId, dateTimeProvider.UtcNow.AddDays(LifetimeInDays),
         refreshTokenGenerator.Generate(), true);
@@ -42,9 +46,9 @@ internal class Session : AggregateRoot<Session>
         return accessTokenIssuer.Issue(AccountId);
     }
     
-    public Guid AccountId { get; }
-    public DateTime ExpiresAt { get; }
-    public string RefreshToken { get; }
+    public Guid AccountId { get; private set; }
+    public DateTime ExpiresAt { get; private set; }
+    public string RefreshToken { get; private set; } = null!;
     public bool IsActive { get; private set; }
 
     private const int LifetimeInDays = 30;

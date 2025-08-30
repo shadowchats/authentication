@@ -7,12 +7,16 @@
 // For full copyright and authorship information, see the COPYRIGHT file.
 
 using System.ComponentModel;
+using JetBrains.Annotations;
 using Shadowchats.Authentication.Core.Domain.Exceptions;
 
 namespace Shadowchats.Authentication.Core.Domain.Base;
 
 public abstract class Entity<TEntity> where TEntity : Entity<TEntity>
 {
+    [UsedImplicitly]
+    protected Entity() { }
+    
     protected Entity(Guid guid)
     {
         if (guid == Guid.Empty)

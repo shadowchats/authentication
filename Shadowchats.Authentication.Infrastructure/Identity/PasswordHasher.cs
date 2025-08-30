@@ -13,7 +13,7 @@ namespace Shadowchats.Authentication.Infrastructure.Identity;
 
 public class PasswordHasher : IPasswordHasher
 {
-    internal PasswordHasher(ISaltsManager saltsManager)
+    public PasswordHasher(ISaltsManager saltsManager)
     {
         _saltsManager = saltsManager;
     }

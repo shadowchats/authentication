@@ -17,4 +17,16 @@
       <PackageReference Include="System.IdentityModel.Tokens.Jwt" Version="8.14.0" />
     </ItemGroup>
 
+    <ItemGroup>
+      <Compile Remove="Persistence\Migrations\**" />
+    </ItemGroup>
+
+    <ItemGroup>
+      <EmbeddedResource Remove="Persistence\Migrations\**" />
+    </ItemGroup>
+
+    <ItemGroup>
+      <None Remove="Persistence\Migrations\**" />
+    </ItemGroup>
+
 </Project>
