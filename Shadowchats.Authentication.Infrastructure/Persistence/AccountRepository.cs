@@ -10,16 +10,17 @@ namespace Shadowchats.Authentication.Infrastructure.Persistence;
 public class AccountRepository(AuthenticationDbContext dbContext) : IAggregateRootRepository<Account>
 {
     public Task<Account?> Find(Expression<Func<Account, bool>> predicate) =>
-        _accounts.FirstOrDefaultAsync(predicate);
+        dbContext.Accounts.FirstOrDefaultAsync(predicate);
 
     public Task<List<Account>> FindAll(Expression<Func<Account, bool>> predicate) =>
-        _accounts.Where(predicate).ToListAsync();
+        dbContext.Accounts.Where(predicate).ToListAsync();
 
     public async Task Add(Account aggregateRoot)
     {
         try
         {
-            await _accounts.AddAsync(aggregateRoot);
+            await dbContext.Accounts.AddAsync(aggregateRoot);
+            await dbContext.SaveChangesAsync();
         }
         catch (DbUpdateException ex) when (ex.InnerException is PostgresException
                                            {
@@ -29,6 +30,4 @@ public class AccountRepository(AuthenticationDbContext dbContext) : IAggregateRo
             throw new EntityAlreadyExistsException<Account, string>(a => a.Credentials.Login);
         }
     }
-    
-    private readonly DbSet<Account> _accounts = dbContext.Accounts;
 }

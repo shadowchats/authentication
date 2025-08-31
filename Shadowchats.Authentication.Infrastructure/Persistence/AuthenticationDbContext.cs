@@ -93,7 +93,7 @@ public class AuthenticationDbContext(string? connectionString) : DbContext
 
     public DbSet<Account> Accounts { get; set; } = null!;
         
-    public DbSet<Session> Sesssions { get; set; } = null!;
+    public DbSet<Session> Sessions { get; set; } = null!;
 
     private readonly string _connectionString = string.IsNullOrWhiteSpace(connectionString)
         ? throw new BugException("Connection string is empty.")

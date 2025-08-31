@@ -11,19 +11,14 @@ using Shadowchats.Authentication.Core.Domain.Exceptions;
 
 namespace Shadowchats.Authentication.Infrastructure.Persistence;
 
-public class UnitOfWork : IUnitOfWork
+public class UnitOfWork(AuthenticationDbContext dbContext) : IUnitOfWork
 {
-    public UnitOfWork(AuthenticationDbContext dbContext)
-    {
-        _dbContext = dbContext;
-    }
-
     public async Task Begin()
     {
         if (_transaction != null)
             throw new BugException("Transaction has already begun.");
         
-        _transaction ??= await _dbContext.Database.BeginTransactionAsync();
+        _transaction = await dbContext.Database.BeginTransactionAsync();
     }
 
     public async Task Commit()
@@ -31,15 +26,11 @@ public class UnitOfWork : IUnitOfWork
         if (_transaction == null)
             throw new BugException("Transaction has not yet begun or has already finished.");
 
-        await _dbContext.SaveChangesAsync();
-        
         await _transaction.CommitAsync();
-        
         await _transaction.DisposeAsync();
-        
-        _dbContext.ChangeTracker.Clear();
-
         _transaction = null;
+        
+        dbContext.ChangeTracker.Clear();
     }
 
     public async Task Rollback()
@@ -48,15 +39,11 @@ public class UnitOfWork : IUnitOfWork
             throw new BugException("Transaction has not yet begun or has already finished.");
         
         await _transaction.RollbackAsync();
-        
         await _transaction.DisposeAsync();
-        
-        _dbContext.ChangeTracker.Clear();
-        
         _transaction = null;
+        
+        dbContext.ChangeTracker.Clear();
     }
-    
-    private readonly AuthenticationDbContext _dbContext;
-    
+
     private IDbContextTransaction? _transaction;
 }
