@@ -26,22 +26,21 @@ namespace Shadowchats.Authentication.Core.Application.UseCases
         {
             public required string Message { get; init; }
         }
-        
-        public class LogoutAllHandler : ICommandHandler<LogoutAllCommand, LogoutAllResult>
-        {
-            public LogoutAllHandler(IAggregateRootsRepository aggregateRootsRepository, IPasswordHasher passwordHasher)
-            {
-                _aggregateRootsRepository = aggregateRootsRepository;
-                _passwordHasher = passwordHasher;
-            }
 
+        public class LogoutAllHandler(
+            IAggregateRootRepository<Account> accountRepository,
+            IAggregateRootRepository<Session> sessionRepository,
+            IPasswordHasher passwordHasher
+        ) : ICommandHandler<LogoutAllCommand, LogoutAllResult>
+        {
             public async Task<LogoutAllResult> Handle(LogoutAllCommand command)
             {
-                var account = await _aggregateRootsRepository.Find<Account>(a => a.Credentials.Login == command.Login);
-                if (account is null || !account.Credentials.Verify(_passwordHasher, command.Password))
+                var account = await accountRepository.Find(a => a.Credentials.Login == command.Login);
+                if (account is null || !account.Credentials.VerifyPassword(passwordHasher, command.Password))
                     throw new AuthenticationFailedException("Login and/or password is invalid.");
 
-                foreach (var session in await _aggregateRootsRepository.FindAll<Session>(s => s.AccountId == account.Guid && s.IsActive))
+                foreach (var session in await sessionRepository.FindAll(s =>
+                             s.AccountId == account.Guid && s.IsActive))
                     session.Revoke();
 
                 return new LogoutAllResult
@@ -49,10 +48,6 @@ namespace Shadowchats.Authentication.Core.Application.UseCases
                     Message = "All active sessions revoked."
                 };
             }
-
-            private readonly IAggregateRootsRepository _aggregateRootsRepository;
-
-            private readonly IPasswordHasher _passwordHasher;
         }
     }
 }

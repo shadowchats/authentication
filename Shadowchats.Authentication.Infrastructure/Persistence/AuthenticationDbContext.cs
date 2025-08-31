@@ -9,11 +9,15 @@
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 using Shadowchats.Authentication.Core.Domain.Aggregates;
+using Shadowchats.Authentication.Core.Domain.Exceptions;
 
 namespace Shadowchats.Authentication.Infrastructure.Persistence;
 
-public class AuthenticationDbContext(DbContextOptions options) : DbContext(options)
+public class AuthenticationDbContext(string? connectionString) : DbContext
 {
+    protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder) =>
+        optionsBuilder.UseNpgsql(_connectionString);
+    
     private class AccountEntityTypeConfiguration : IEntityTypeConfiguration<Account>
     {
         public void Configure(EntityTypeBuilder<Account> builder)
@@ -87,7 +91,11 @@ public class AuthenticationDbContext(DbContextOptions options) : DbContext(optio
         base.OnModelCreating(modelBuilder);
     }
 
-    internal DbSet<Account> Accounts { get; set; } = null!;
+    public DbSet<Account> Accounts { get; set; } = null!;
         
-    internal DbSet<Session> Sesssions { get; set; } = null!;
+    public DbSet<Session> Sesssions { get; set; } = null!;
+
+    private readonly string _connectionString = string.IsNullOrWhiteSpace(connectionString)
+        ? throw new BugException("Connection string is empty.")
+        : connectionString;
 }

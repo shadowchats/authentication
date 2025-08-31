@@ -13,7 +13,7 @@ using Shadowchats.Authentication.Core.Domain.Interfaces;
 
 namespace Shadowchats.Authentication.Core.Domain.ValueObjects;
 
-internal class Credentials : ValueObject<Credentials>
+public class Credentials : ValueObject<Credentials>
 {
     [UsedImplicitly]
     private Credentials() { }
@@ -91,7 +91,7 @@ internal class Credentials : ValueObject<Credentials>
         PasswordHash = passwordHash;
     }
     
-    public bool Verify(IPasswordHasher hasher, string password) => hasher.Verify(PasswordHash, password);
+    public bool VerifyPassword(IPasswordHasher hasher, string password) => hasher.Verify(PasswordHash, password);
 
     protected override IEnumerable<object> GetEqualityComponents()
     {

@@ -22,7 +22,7 @@ public class RegisterAccountTests
     public async Task Handle_InvariantViolationException_Test()
     {
         // Arrange
-        var repository = new Mock<IAggregateRootsRepository>();
+        var repository = new Mock<IAggregateRootRepository>();
         repository.Setup(r => r.Exists(It.IsAny<Expression<Func<Account, bool>>>())).ReturnsAsync(true);
 
         var handler =
@@ -37,7 +37,7 @@ public class RegisterAccountTests
     public async Task RegisterAccount_Test()
     {
         // Arrange
-        var repository = new Mock<IAggregateRootsRepository>();
+        var repository = new Mock<IAggregateRootRepository>();
         repository.Setup(r => r.Exists(It.IsAny<Expression<Func<Account, bool>>>())).ReturnsAsync(false);
 
         var handler = new RegisterAccountHandler(repository.Object, Mock.Of<IPasswordHasher>(), Mock.Of<IGuidGenerator>(j => j.Generate() == Guid.NewGuid()));

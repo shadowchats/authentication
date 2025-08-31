@@ -13,7 +13,7 @@ using Shadowchats.Authentication.Core.Domain.Interfaces;
 
 namespace Shadowchats.Authentication.Core.Domain.Aggregates;
 
-internal class Session : AggregateRoot<Session>
+public class Session : AggregateRoot<Session>
 {
     [UsedImplicitly]
     private Session() { }

@@ -13,7 +13,7 @@ using Shadowchats.Authentication.Core.Domain.ValueObjects;
 
 namespace Shadowchats.Authentication.Core.Domain.Aggregates;
 
-internal class Account : AggregateRoot<Account>
+public class Account : AggregateRoot<Account>
 {
     [UsedImplicitly]
     private Account() { }

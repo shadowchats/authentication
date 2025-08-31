@@ -11,13 +11,11 @@ using Shadowchats.Authentication.Core.Domain.Base;
 
 namespace Shadowchats.Authentication.Core.Application.Interfaces;
 
-public interface IAggregateRootsRepository
+public interface IAggregateRootRepository<TAggregateRoot> where TAggregateRoot : AggregateRoot<TAggregateRoot>
 {
-    Task<T?> Find<T>(Expression<Func<T, bool>> predicate) where T : AggregateRoot<T>;
-    
-    Task<List<T>> FindAll<T>(Expression<Func<T, bool>> predicate) where T : AggregateRoot<T>;
+    Task<TAggregateRoot?> Find(Expression<Func<TAggregateRoot, bool>> predicate);
 
-    Task Add<T>(T aggregateRoot) where T : AggregateRoot<T>;
+    Task<List<TAggregateRoot>> FindAll(Expression<Func<TAggregateRoot, bool>> predicate);
 
-    Task<bool> Exists<T>(Expression<Func<T, bool>> predicate) where T : AggregateRoot<T>;
+    Task Add(TAggregateRoot aggregateRoot);
 }

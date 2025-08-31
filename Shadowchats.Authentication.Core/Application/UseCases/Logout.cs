@@ -23,16 +23,12 @@ namespace Shadowchats.Authentication.Core.Application.UseCases
             public required string Message { get; init; }
         }
 
-        public class LogoutHandler : ICommandHandler<LogoutCommand, LogoutResult>
+        public class LogoutHandler(IAggregateRootRepository<Session> sessionRepository)
+            : ICommandHandler<LogoutCommand, LogoutResult>
         {
-            public LogoutHandler(IAggregateRootsRepository aggregateRootsRepository)
-            {
-                _aggregateRootsRepository = aggregateRootsRepository;
-            }
-
             public async Task<LogoutResult> Handle(LogoutCommand command)
             {
-                (await _aggregateRootsRepository.Find<Session>(s => s.RefreshToken == command.RefreshToken))?.Revoke();
+                (await sessionRepository.Find(s => s.RefreshToken == command.RefreshToken))?.Revoke();
 
                 return new LogoutResult
                 {
@@ -41,8 +37,6 @@ namespace Shadowchats.Authentication.Core.Application.UseCases
                         "even if the token is invalid, expired, revoked, or was never issued."
                 };
             }
-
-            private readonly IAggregateRootsRepository _aggregateRootsRepository;
         }
     }
 }

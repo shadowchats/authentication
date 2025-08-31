@@ -6,6 +6,7 @@
 // (at your option) any later version. See the LICENSE file for details.
 // For full copyright and authorship information, see the COPYRIGHT file.
 
+using Shadowchats.Authentication.Core.Application.Exceptions;
 using Shadowchats.Authentication.Core.Application.Interfaces;
 using Shadowchats.Authentication.Core.Domain.Aggregates;
 using Shadowchats.Authentication.Core.Domain.Exceptions;
@@ -28,34 +29,31 @@ namespace Shadowchats.Authentication.Core.Application.UseCases
             public required string Message { get; init; }
         }
         
-        public class RegisterAccountHandler : ICommandHandler<RegisterAccountCommand, RegisterAccountResult>
+        public class RegisterAccountHandler(
+            IAggregateRootRepository<Account> accountRepository,
+            IPasswordHasher passwordHasher,
+            IGuidGenerator guidGenerator)
+            : ICommandHandler<RegisterAccountCommand, RegisterAccountResult>
         {
-            public RegisterAccountHandler(IAggregateRootsRepository aggregateRootsRepository, IPasswordHasher passwordHasher, IGuidGenerator guidGenerator)
-            {
-                _aggregateRootsRepository = aggregateRootsRepository;
-                _passwordHasher = passwordHasher;
-                _guidGenerator = guidGenerator;
-            }
-
             public async Task<RegisterAccountResult> Handle(RegisterAccountCommand command)
             {
-                if (await _aggregateRootsRepository.Exists<Account>(a => a.Credentials.Login == command.Login))
+                var credentials = Credentials.Create(passwordHasher, command.Login, command.Password);
+                var account = Account.Create(guidGenerator, credentials);
+
+                try
+                {
+                    await accountRepository.Add(account);
+                }
+                catch (EntityAlreadyExistsException<Account, string> ex) when (ex.IsConflictOn(a => a.Credentials.Login))
+                {
                     throw new InvariantViolationException("Login and/or password is invalid.");
-                
-                await _aggregateRootsRepository.Add(Account.Create(_guidGenerator,
-                    Credentials.Create(_passwordHasher, command.Login, command.Password)));
+                }
 
                 return new RegisterAccountResult
                 {
                     Message = "Account registered."
                 };
             }
-
-            private readonly IAggregateRootsRepository _aggregateRootsRepository;
-            
-            private readonly IPasswordHasher _passwordHasher;
-            
-            private readonly IGuidGenerator _guidGenerator;
         }
     }
 }
