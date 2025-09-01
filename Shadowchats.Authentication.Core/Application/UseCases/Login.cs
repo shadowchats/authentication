@@ -32,6 +32,7 @@ namespace Shadowchats.Authentication.Core.Application.UseCases
         public class LoginHandler(
             IAggregateRootRepository<Account> accountRepository,
             IAggregateRootRepository<Session> sessionRepository,
+            IPersistenceContext persistenceContext,
             IPasswordHasher passwordHasher,
             IGuidGenerator guidGenerator,
             IDateTimeProvider dateTimeProvider,
@@ -47,6 +48,7 @@ namespace Shadowchats.Authentication.Core.Application.UseCases
 
                 var session = Session.Create(guidGenerator, dateTimeProvider, refreshTokenGenerator, account.Guid);
                 await sessionRepository.Add(session);
+                await persistenceContext.SaveChanges();
 
                 return new LoginResult
                 {

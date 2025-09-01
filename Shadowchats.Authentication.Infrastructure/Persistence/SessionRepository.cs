@@ -21,9 +21,5 @@ public class SessionRepository(AuthenticationDbContext dbContext) : IAggregateRo
     public Task<List<Session>> FindAll(Expression<Func<Session, bool>> predicate) =>
         dbContext.Sessions.Where(predicate).ToListAsync();
 
-    public async Task Add(Session aggregateRoot)
-    {
-        await dbContext.Sessions.AddAsync(aggregateRoot);
-        await dbContext.SaveChangesAsync();
-    }
+    public Task Add(Session aggregateRoot) => dbContext.Sessions.AddAsync(aggregateRoot).AsTask();
 }

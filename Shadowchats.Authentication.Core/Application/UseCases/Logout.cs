@@ -23,12 +23,17 @@ namespace Shadowchats.Authentication.Core.Application.UseCases
             public required string Message { get; init; }
         }
 
-        public class LogoutHandler(IAggregateRootRepository<Session> sessionRepository)
+        public class LogoutHandler(IAggregateRootRepository<Session> sessionRepository, IPersistenceContext persistenceContext)
             : ICommandHandler<LogoutCommand, LogoutResult>
         {
             public async Task<LogoutResult> Handle(LogoutCommand command)
             {
-                (await sessionRepository.Find(s => s.RefreshToken == command.RefreshToken))?.Revoke();
+                var session = await sessionRepository.Find(s => s.RefreshToken == command.RefreshToken);
+                if (session is not null)
+                {
+                    session.Revoke();
+                    await persistenceContext.SaveChanges();
+                }
 
                 return new LogoutResult
                 {

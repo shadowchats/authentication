@@ -30,6 +30,7 @@ namespace Shadowchats.Authentication.Core.Application.UseCases
         public class LogoutAllHandler(
             IAggregateRootRepository<Account> accountRepository,
             IAggregateRootRepository<Session> sessionRepository,
+            IPersistenceContext persistenceContext,
             IPasswordHasher passwordHasher
         ) : ICommandHandler<LogoutAllCommand, LogoutAllResult>
         {
@@ -39,10 +40,15 @@ namespace Shadowchats.Authentication.Core.Application.UseCases
                 if (account is null || !account.Credentials.VerifyPassword(passwordHasher, command.Password))
                     throw new AuthenticationFailedException("Login and/or password is invalid.");
 
-                foreach (var session in await sessionRepository.FindAll(s =>
-                             s.AccountId == account.Guid && s.IsActive))
-                    session.Revoke();
+                var sessions = await sessionRepository.FindAll(s => s.AccountId == account.Guid && s.IsActive);
+                if (sessions.Count > 0)
+                {
+                    foreach (var session in sessions)
+                        session.Revoke();
 
+                    await persistenceContext.SaveChanges();
+                }
+                
                 return new LogoutAllResult
                 {
                     Message = "All active sessions revoked."

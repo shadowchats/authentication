@@ -31,6 +31,7 @@ namespace Shadowchats.Authentication.Core.Application.UseCases
         
         public class RegisterAccountHandler(
             IAggregateRootRepository<Account> accountRepository,
+            IPersistenceContext persistenceContext,
             IPasswordHasher passwordHasher,
             IGuidGenerator guidGenerator)
             : ICommandHandler<RegisterAccountCommand, RegisterAccountResult>
@@ -39,10 +40,11 @@ namespace Shadowchats.Authentication.Core.Application.UseCases
             {
                 var credentials = Credentials.Create(passwordHasher, command.Login, command.Password);
                 var account = Account.Create(guidGenerator, credentials);
-
+                
+                await accountRepository.Add(account);
                 try
                 {
-                    await accountRepository.Add(account);
+                    await persistenceContext.SaveChanges();
                 }
                 catch (EntityAlreadyExistsException<Account, string> ex) when (ex.IsConflictOn(a => a.Credentials.Login))
                 {

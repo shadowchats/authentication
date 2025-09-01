@@ -43,6 +43,7 @@ public static class ServiceCollectionExtensions
         services.AddScoped<AuthenticationDbContext>(_ =>
             new AuthenticationDbContext(configuration.GetValue<string>("Persistence:PostgresConnectionString")));
         services.AddScoped<IUnitOfWork, UnitOfWork>();
+        services.AddScoped<IPersistenceContext, PersistenceContext>();
         services.AddScoped<IAggregateRootRepository<Account>, AccountRepository>();
         services.AddScoped<IAggregateRootRepository<Session>, SessionRepository>();
         
