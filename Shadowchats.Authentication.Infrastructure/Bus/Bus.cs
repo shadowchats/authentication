@@ -11,18 +11,8 @@ using Shadowchats.Authentication.Core.Application.Interfaces;
 
 namespace Shadowchats.Authentication.Infrastructure.Bus;
 
-public class CommandBus : ICommandBus
+public class Bus(IServiceProvider services) : IBus
 {
-    public CommandBus(IServiceProvider services)
-    {
-        _services = services;
-    }
-
-    public Task<TResult> Execute<TCommand, TResult>(TCommand command) where TCommand : ICommand<TResult>
-    {
-        var handler = _services.GetRequiredService<ICommandHandler<TCommand, TResult>>();
-        return handler.Handle(command);
-    }
-    
-    private readonly IServiceProvider _services;
+    public Task<TResult> Execute<TMessage, TResult>(TMessage message) where TMessage : IMessage<TResult> =>
+        services.GetRequiredService<IMessageHandler<TMessage, TResult>>().Handle(message);
 }

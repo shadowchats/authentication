@@ -6,6 +6,7 @@
 // (at your option) any later version. See the LICENSE file for details.
 // For full copyright and authorship information, see the COPYRIGHT file.
 
+using Shadowchats.Authentication.Core.Application.Base;
 using Shadowchats.Authentication.Core.Application.Exceptions;
 using Shadowchats.Authentication.Core.Application.Interfaces;
 using Shadowchats.Authentication.Core.Domain.Aggregates;
@@ -17,16 +18,11 @@ namespace Shadowchats.Authentication.Core.Application.UseCases
 {
     namespace RegisterAccount
     {
-        public class RegisterAccountCommand : ICommand<RegisterAccountResult>
+        public class RegisterAccountCommand : IMessage<NoResult>
         {
             public required string Login { get; init; }
             
             public required string Password { get; init; }
-        }
-        
-        public class RegisterAccountResult
-        {
-            public required string Message { get; init; }
         }
         
         public class RegisterAccountHandler(
@@ -34,9 +30,9 @@ namespace Shadowchats.Authentication.Core.Application.UseCases
             IPersistenceContext persistenceContext,
             IPasswordHasher passwordHasher,
             IGuidGenerator guidGenerator)
-            : ICommandHandler<RegisterAccountCommand, RegisterAccountResult>
+            : IMessageHandler<RegisterAccountCommand, NoResult>
         {
-            public async Task<RegisterAccountResult> Handle(RegisterAccountCommand command)
+            public async Task<NoResult> Handle(RegisterAccountCommand command)
             {
                 var credentials = Credentials.Create(passwordHasher, command.Login, command.Password);
                 var account = Account.Create(guidGenerator, credentials);
@@ -51,10 +47,7 @@ namespace Shadowchats.Authentication.Core.Application.UseCases
                     throw new InvariantViolationException("Login and/or password is invalid.");
                 }
 
-                return new RegisterAccountResult
-                {
-                    Message = "Account registered."
-                };
+                return NoResult.Value;
             }
         }
     }

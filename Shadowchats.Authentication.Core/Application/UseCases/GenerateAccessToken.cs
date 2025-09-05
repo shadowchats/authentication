@@ -15,7 +15,7 @@ namespace Shadowchats.Authentication.Core.Application.UseCases
 {
     namespace GenerateAccessToken
     {
-        public class GenerateAccessTokenCommand : ICommand<GenerateAccessTokenResult>
+        public class GenerateAccessTokenCommand : IMessage<GenerateAccessTokenResult>
         {
             public required string RefreshToken { get; init; }
         }
@@ -29,7 +29,7 @@ namespace Shadowchats.Authentication.Core.Application.UseCases
             IAggregateRootRepository<Session> sessionRepository,
             IDateTimeProvider dateTimeProvider,
             IAccessTokenIssuer accessTokenIssuer)
-            : ICommandHandler<GenerateAccessTokenCommand, GenerateAccessTokenResult>
+            : IMessageHandler<GenerateAccessTokenCommand, GenerateAccessTokenResult>
         {
             public async Task<GenerateAccessTokenResult> Handle(GenerateAccessTokenCommand command)
             {

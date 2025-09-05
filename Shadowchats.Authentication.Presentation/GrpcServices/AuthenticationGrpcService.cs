@@ -7,6 +7,7 @@
 // For full copyright and authorship information, see the COPYRIGHT file.
 
 using Grpc.Core;
+using Shadowchats.Authentication.Core.Application.Base;
 using Shadowchats.Authentication.Core.Application.Interfaces;
 using Shadowchats.Authentication.Core.Application.UseCases.GenerateAccessToken;
 using Shadowchats.Authentication.Core.Application.UseCases.Login;
@@ -17,13 +18,8 @@ using Shadowchats.Authentication.Presentation.Grpc;
 
 namespace Shadowchats.Authentication.Presentation.GrpcServices;
 
-public class AuthenticationGrpcService : AuthenticationService.AuthenticationServiceBase
+public class AuthenticationGrpcService(IBus bus) : AuthenticationService.AuthenticationServiceBase
 {
-    public AuthenticationGrpcService(ICommandBus commandBus)
-    {
-        _commandBus = commandBus;
-    }
-    
     public override async Task<RegisterAccountResponse> RegisterAccount(RegisterAccountRequest request, ServerCallContext context)
     {
         var command = new RegisterAccountCommand
@@ -32,11 +28,11 @@ public class AuthenticationGrpcService : AuthenticationService.AuthenticationSer
             Password = request.Password
         };
 
-        var result = await _commandBus.Execute<RegisterAccountCommand, RegisterAccountResult>(command);
+        await bus.Execute<RegisterAccountCommand, NoResult>(command);
 
         return new RegisterAccountResponse
         {
-            Message = result.Message
+            Message = "Account registered."
         };
     }
 
@@ -48,7 +44,7 @@ public class AuthenticationGrpcService : AuthenticationService.AuthenticationSer
             Password = request.Password
         };
 
-        var result = await _commandBus.Execute<LoginCommand, LoginResult>(command);
+        var result = await bus.Execute<LoginCommand, LoginResult>(command);
 
         return new LoginResponse
         {
@@ -64,7 +60,7 @@ public class AuthenticationGrpcService : AuthenticationService.AuthenticationSer
             RefreshToken = request.RefreshToken
         };
 
-        var result = await _commandBus.Execute<GenerateAccessTokenCommand, GenerateAccessTokenResult>(command);
+        var result = await bus.Execute<GenerateAccessTokenCommand, GenerateAccessTokenResult>(command);
 
         return new GenerateAccessTokenResponse
         {
@@ -79,11 +75,12 @@ public class AuthenticationGrpcService : AuthenticationService.AuthenticationSer
             RefreshToken = request.RefreshToken
         };
 
-        var result = await _commandBus.Execute<LogoutCommand, LogoutResult>(command);
+        await bus.Execute<LogoutCommand, NoResult>(command);
 
         return new LogoutResponse
         {
-            Message = result.Message
+            Message = "According to RFC 7009, the authorization server responds with an HTTP 200 OK status code " +
+                      "even if the token is invalid, expired, revoked, or was never issued."
         };
     }
 
@@ -95,13 +92,11 @@ public class AuthenticationGrpcService : AuthenticationService.AuthenticationSer
             Password = request.Password
         };
 
-        var result = await _commandBus.Execute<LogoutAllCommand, LogoutAllResult>(command);
+        await bus.Execute<LogoutAllCommand, NoResult>(command);
 
         return new LogoutAllResponse
         {
-            Message = result.Message
+            Message = "All active sessions revoked."
         };
     }
-
-    private readonly ICommandBus _commandBus;
 }

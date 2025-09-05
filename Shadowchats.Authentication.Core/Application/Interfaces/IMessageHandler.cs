@@ -8,7 +8,7 @@
 
 namespace Shadowchats.Authentication.Core.Application.Interfaces;
 
-public interface ICommandHandler<TCommand, TResult> where TCommand : ICommand<TResult>
+public interface IMessageHandler<TMessage, TResult> where TMessage : IMessage<TResult>
 {
-    Task<TResult> Handle(TCommand command);
+    Task<TResult> Handle(TMessage message);
 }

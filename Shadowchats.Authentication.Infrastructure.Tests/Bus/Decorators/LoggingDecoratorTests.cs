@@ -21,44 +21,44 @@ public class LoggingDecoratorTests
     public async Task Handle_StartAndSuccess_Test()
     {
         // Arrange
-        var command = new TestCommand { Data = "test" };
+        var message = new TestMessage { Data = "test" };
         var expectedResult = new TestResult { Value = "result" };
         
-        var logger = new Mock<ILogger<LoggingDecorator<TestCommand, TestResult>>>();
-        var decoratedHandler = new Mock<ICommandHandler<TestCommand, TestResult>>();
-        decoratedHandler.Setup(h => h.Handle(command)).ReturnsAsync(expectedResult);
+        var logger = new Mock<ILogger<LoggingDecorator<TestMessage, TestResult>>>();
+        var decoratedHandler = new Mock<IMessageHandler<TestMessage, TestResult>>();
+        decoratedHandler.Setup(h => h.Handle(message)).ReturnsAsync(expectedResult);
         
-        var decorator = new LoggingDecorator<TestCommand, TestResult>(
+        var decorator = new LoggingDecorator<TestMessage, TestResult>(
             logger.Object, decoratedHandler.Object);
         
         // Act
-        var result = await decorator.Handle(command);
+        var result = await decorator.Handle(message);
         
         // Assert
         Assert.Equal(expectedResult, result);
         
         VerifyLog(logger, LogLevel.Information, "Stage: Start");
         VerifyLog(logger, LogLevel.Information, "Stage: Success");
-        decoratedHandler.Verify(h => h.Handle(command), Times.Once);
+        decoratedHandler.Verify(h => h.Handle(message), Times.Once);
     }
     
     [Fact]
     public async Task Handle_ExpectedFailure_Test()
     {
         // Arrange
-        var command = new TestCommand();
+        var message = new TestMessage();
         var expectedException = new InvariantViolationException("Test error");
         
-        var logger = new Mock<ILogger<LoggingDecorator<TestCommand, TestResult>>>();
-        var decoratedHandler = new Mock<ICommandHandler<TestCommand, TestResult>>();
-        decoratedHandler.Setup(h => h.Handle(command)).ThrowsAsync(expectedException);
+        var logger = new Mock<ILogger<LoggingDecorator<TestMessage, TestResult>>>();
+        var decoratedHandler = new Mock<IMessageHandler<TestMessage, TestResult>>();
+        decoratedHandler.Setup(h => h.Handle(message)).ThrowsAsync(expectedException);
         
-        var decorator = new LoggingDecorator<TestCommand, TestResult>(
+        var decorator = new LoggingDecorator<TestMessage, TestResult>(
             logger.Object, decoratedHandler.Object);
         
         // Act & Assert
         var thrownException = await Assert.ThrowsAsync<InvariantViolationException>(
-            () => decorator.Handle(command));
+            () => decorator.Handle(message));
         
         Assert.Same(expectedException, thrownException);
         VerifyLog(logger, LogLevel.Information, "Stage: ExpectedFailure");
@@ -68,18 +68,18 @@ public class LoggingDecoratorTests
     public async Task Handle_UnexpectedFailure_Test()
     {
         // Arrange
-        var command = new TestCommand();
+        var message = new TestMessage();
         var unexpectedException = new InvalidOperationException("Unexpected");
         
-        var logger = new Mock<ILogger<LoggingDecorator<TestCommand, TestResult>>>();
-        var decoratedHandler = new Mock<ICommandHandler<TestCommand, TestResult>>();
-        decoratedHandler.Setup(h => h.Handle(command)).ThrowsAsync(unexpectedException);
+        var logger = new Mock<ILogger<LoggingDecorator<TestMessage, TestResult>>>();
+        var decoratedHandler = new Mock<IMessageHandler<TestMessage, TestResult>>();
+        decoratedHandler.Setup(h => h.Handle(message)).ThrowsAsync(unexpectedException);
         
-        var decorator = new LoggingDecorator<TestCommand, TestResult>(
+        var decorator = new LoggingDecorator<TestMessage, TestResult>(
             logger.Object, decoratedHandler.Object);
         
         // Act & Assert
-        await Assert.ThrowsAsync<InvalidOperationException>(() => decorator.Handle(command));
+        await Assert.ThrowsAsync<InvalidOperationException>(() => decorator.Handle(message));
         
         VerifyLog(logger, LogLevel.Error, "Stage: UnexpectedFailure");
     }

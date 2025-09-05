@@ -12,58 +12,47 @@ using Shadowchats.Authentication.Core.Domain.Exceptions;
 
 namespace Shadowchats.Authentication.Infrastructure.Bus.Decorators;
 
-public class LoggingDecorator<TCommand, TResult> : ICommandHandler<TCommand, TResult>
-    where TCommand : ICommand<TResult>
+public class LoggingDecorator<TMessage, TResult>(
+    ILogger<LoggingDecorator<TMessage, TResult>> logger,
+    IMessageHandler<TMessage, TResult> decorated)
+    : IMessageHandler<TMessage, TResult>
+    where TMessage : IMessage<TResult>
 {
-    public LoggingDecorator(
-        ILogger<LoggingDecorator<TCommand, TResult>> logger,
-        ICommandHandler<TCommand, TResult> decorated)
+    public async Task<TResult> Handle(TMessage message)
     {
-        _logger = logger;
-        _decorated = decorated;
-        _commandName = typeof(TCommand).Name;
-        _handlerName = decorated.GetType().Name;
-    }
-
-    public async Task<TResult> Handle(TCommand command)
-    {
-        _logger.LogInformation(
-            "Stage: {Stage}. CommandName: {CommandName}. HandlerName: {HandlerName}. Payload: {@Command}", 
-            "Start", _commandName, _handlerName, command);
+        logger.LogInformation(
+            "Stage: {Stage}. MessageName: {MessageName}. HandlerName: {HandlerName}. Payload: {@Message}", 
+            "Start", _messageName, _handlerName, message);
 
         try
         {
-            var result = await _decorated.Handle(command);
+            var result = await decorated.Handle(message);
 
-            _logger.LogInformation(
-                "Stage: {Stage}. CommandName: {CommandName}. HandlerName: {HandlerName}. Payload: {@Command}. Result: {@Result}",
-                "Success", _commandName, _handlerName, command, result);
+            logger.LogInformation(
+                "Stage: {Stage}. MessageName: {MessageName}. HandlerName: {HandlerName}. Payload: {@Message}. Result: {@Result}",
+                "Success", _messageName, _handlerName, message, result);
 
             return result;
         }
         catch (BaseException expectedException) when (expectedException is not BugException)
         {
-            _logger.LogInformation(expectedException,
-                "Stage: {Stage}. CommandName: {CommandName}. HandlerName: {HandlerName}. Payload: {@Command}",
-                "ExpectedFailure", _commandName, _handlerName, command);
+            logger.LogInformation(expectedException,
+                "Stage: {Stage}. MessageName: {MessageName}. HandlerName: {HandlerName}. Payload: {@Message}",
+                "ExpectedFailure", _messageName, _handlerName, message);
 
             throw;
         }
         catch (Exception unexpectedException)
         {
-            _logger.LogError(unexpectedException,
+            logger.LogError(unexpectedException,
                 "Stage: {Stage}. CommandName: {CommandName}. HandlerName: {HandlerName}. Payload: {@Command}",
-                "UnexpectedFailure", _commandName, _handlerName, command);
+                "UnexpectedFailure", _messageName, _handlerName, message);
 
             throw;
         }
     }
-    
-    private readonly ILogger<LoggingDecorator<TCommand, TResult>> _logger;
-    
-    private readonly ICommandHandler<TCommand, TResult> _decorated;
 
-    private readonly string _commandName;
+    private readonly string _messageName = typeof(TMessage).Name;
 
-    private readonly string _handlerName;
+    private readonly string _handlerName = decorated.GetType().Name;
 }

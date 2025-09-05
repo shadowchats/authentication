@@ -9,25 +9,28 @@
 using Shadowchats.Authentication.Core.Application.Base;
 using Shadowchats.Authentication.Core.Application.Interfaces;
 using Shadowchats.Authentication.Core.Domain.Aggregates;
+using Shadowchats.Authentication.Core.Domain.Interfaces;
 
-namespace Shadowchats.Authentication.Core.Application.UseCases
+namespace Shadowchats.Authentication.Core.Application.Jobs
 {
-    namespace Logout
+    namespace RevokeExpiredSessions
     {
-        public class LogoutCommand : IMessage<NoResult>
-        {
-            public required string RefreshToken { get; init; }
-        }
+        public class RevokeExpiredSessionsJob : IMessage<NoResult>;
 
-        public class LogoutHandler(IAggregateRootRepository<Session> sessionRepository, IPersistenceContext persistenceContext)
-            : IMessageHandler<LogoutCommand, NoResult>
+        public class RevokeExpiredSessionsHandler(
+            IAggregateRootRepository<Session> sessionRepository,
+            IPersistenceContext persistenceContext,
+            IDateTimeProvider dateTimeProvider) : IMessageHandler<RevokeExpiredSessionsJob, NoResult>
         {
-            public async Task<NoResult> Handle(LogoutCommand command)
+            public async Task<NoResult> Handle(RevokeExpiredSessionsJob _)
             {
-                var session = await sessionRepository.Find(s => s.RefreshToken == command.RefreshToken);
-                if (session is not null)
+                var sessions =
+                    await sessionRepository.FindAll(s => s.IsActive && s.ExpiresAt < dateTimeProvider.UtcNow);
+                if (sessions.Count > 0)
                 {
-                    session.Revoke();
+                    foreach (var session in sessions)
+                        session.Revoke();
+
                     await persistenceContext.SaveChanges();
                 }
 

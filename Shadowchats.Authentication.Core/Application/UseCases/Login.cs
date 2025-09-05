@@ -15,7 +15,7 @@ namespace Shadowchats.Authentication.Core.Application.UseCases
 {
     namespace Login
     {
-        public class LoginCommand : ICommand<LoginResult>
+        public class LoginCommand : IMessage<LoginResult>
         {
             public required string Login { get; init; }
             
@@ -38,7 +38,7 @@ namespace Shadowchats.Authentication.Core.Application.UseCases
             IDateTimeProvider dateTimeProvider,
             IRefreshTokenGenerator refreshTokenGenerator,
             IAccessTokenIssuer accessTokenIssuer)
-            : ICommandHandler<LoginCommand, LoginResult>
+            : IMessageHandler<LoginCommand, LoginResult>
         {
             public async Task<LoginResult> Handle(LoginCommand command)
             {

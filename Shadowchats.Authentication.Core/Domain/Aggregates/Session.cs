@@ -40,7 +40,7 @@ public class Session : AggregateRoot<Session>
     
     public string GenerateAccessToken(IAccessTokenIssuer accessTokenIssuer, IDateTimeProvider dateTimeProvider)
     {
-        if (!IsActive || dateTimeProvider.UtcNow > ExpiresAt)
+        if (!IsActive || ExpiresAt < dateTimeProvider.UtcNow)
             throw new InvariantViolationException("Refresh token is invalid.");
         
         return accessTokenIssuer.Issue(AccountId);

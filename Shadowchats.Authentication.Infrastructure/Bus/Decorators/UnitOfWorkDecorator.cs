@@ -11,36 +11,29 @@ using Shadowchats.Authentication.Infrastructure.Persistence;
 
 namespace Shadowchats.Authentication.Infrastructure.Bus.Decorators;
 
-public class UnitOfWorkDecorator<TCommand, TResult> : ICommandHandler<TCommand, TResult>
-    where TCommand : ICommand<TResult>
+public class UnitOfWorkDecorator<TMessage, TResult>(
+    IUnitOfWork unitOfWork,
+    IMessageHandler<TMessage, TResult> decorated)
+    : IMessageHandler<TMessage, TResult>
+    where TMessage : IMessage<TResult>
 {
-    public UnitOfWorkDecorator(IUnitOfWork unitOfWork, ICommandHandler<TCommand, TResult> decorated)
+    public async Task<TResult> Handle(TMessage message)
     {
-        _unitOfWork = unitOfWork;
-        _decorated = decorated;
-    }
-
-    public async Task<TResult> Handle(TCommand command)
-    {
-        await _unitOfWork.Begin();
+        await unitOfWork.Begin();
 
         try
         {
-            var result = await _decorated.Handle(command);
+            var result = await decorated.Handle(message);
 
-            await _unitOfWork.Commit();
+            await unitOfWork.Commit();
             
             return result;
         }
         catch
         {
-            await _unitOfWork.Rollback();
+            await unitOfWork.Rollback();
             
             throw;
         }
     }
-    
-    private readonly IUnitOfWork _unitOfWork;
-
-    private readonly ICommandHandler<TCommand, TResult> _decorated;
 }

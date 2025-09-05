@@ -6,6 +6,7 @@
 // (at your option) any later version. See the LICENSE file for details.
 // For full copyright and authorship information, see the COPYRIGHT file.
 
+using Shadowchats.Authentication.Core.Application.Base;
 using Shadowchats.Authentication.Core.Application.Interfaces;
 using Shadowchats.Authentication.Core.Domain.Aggregates;
 using Shadowchats.Authentication.Core.Domain.Exceptions;
@@ -15,16 +16,11 @@ namespace Shadowchats.Authentication.Core.Application.UseCases
 {
     namespace LogoutAll
     {
-        public class LogoutAllCommand : ICommand<LogoutAllResult>
+        public class LogoutAllCommand : IMessage<NoResult>
         {
             public required string Login { get; init; }
             
             public required string Password { get; init; }
-        }
-        
-        public class LogoutAllResult
-        {
-            public required string Message { get; init; }
         }
 
         public class LogoutAllHandler(
@@ -32,9 +28,9 @@ namespace Shadowchats.Authentication.Core.Application.UseCases
             IAggregateRootRepository<Session> sessionRepository,
             IPersistenceContext persistenceContext,
             IPasswordHasher passwordHasher
-        ) : ICommandHandler<LogoutAllCommand, LogoutAllResult>
+        ) : IMessageHandler<LogoutAllCommand, NoResult>
         {
-            public async Task<LogoutAllResult> Handle(LogoutAllCommand command)
+            public async Task<NoResult> Handle(LogoutAllCommand command)
             {
                 var account = await accountRepository.Find(a => a.Credentials.Login == command.Login);
                 if (account is null || !account.Credentials.VerifyPassword(passwordHasher, command.Password))
@@ -49,10 +45,7 @@ namespace Shadowchats.Authentication.Core.Application.UseCases
                     await persistenceContext.SaveChanges();
                 }
                 
-                return new LogoutAllResult
-                {
-                    Message = "All active sessions revoked."
-                };
+                return NoResult.Value;
             }
         }
     }

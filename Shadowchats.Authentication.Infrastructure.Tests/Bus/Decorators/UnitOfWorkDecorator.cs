@@ -20,29 +20,29 @@ public class UnitOfWorkDecoratorTests
     public async Task Handle_Commit_Test()
     {
         // Arrange
-        var command = new TestCommand();
+        var message = new TestMessage();
         var expectedResult = new TestResult();
         
         var unitOfWork = new Mock<IUnitOfWork>();
-        var decoratedHandler = new Mock<ICommandHandler<TestCommand, TestResult>>();
-        decoratedHandler.Setup(h => h.Handle(command)).ReturnsAsync(expectedResult);
+        var decoratedHandler = new Mock<IMessageHandler<TestMessage, TestResult>>();
+        decoratedHandler.Setup(h => h.Handle(message)).ReturnsAsync(expectedResult);
         
-        var decorator = new UnitOfWorkDecorator<TestCommand, TestResult>(
+        var decorator = new UnitOfWorkDecorator<TestMessage, TestResult>(
             unitOfWork.Object, decoratedHandler.Object);
         
         // Act
-        var result = await decorator.Handle(command);
+        var result = await decorator.Handle(message);
         
         // Assert
         Assert.Equal(expectedResult, result);
         
         var sequence = new MockSequence();
         unitOfWork.InSequence(sequence).Setup(uow => uow.Begin());
-        decoratedHandler.InSequence(sequence).Setup(h => h.Handle(command));
+        decoratedHandler.InSequence(sequence).Setup(h => h.Handle(message));
         unitOfWork.InSequence(sequence).Setup(uow => uow.Commit());
         
         unitOfWork.Verify(uow => uow.Begin(), Times.Once);
-        decoratedHandler.Verify(dh => dh.Handle(command), Times.Once);
+        decoratedHandler.Verify(dh => dh.Handle(message), Times.Once);
         unitOfWork.Verify(uow => uow.Commit(), Times.Once);
         unitOfWork.Verify(uow => uow.Rollback(), Times.Never);
     }
@@ -51,19 +51,19 @@ public class UnitOfWorkDecoratorTests
     public async Task Handle_Rollback_Test()
     {
         // Arrange
-        var command = new TestCommand();
+        var message = new TestMessage();
         var exception = new InvalidOperationException("Test error");
         
         var unitOfWork = new Mock<IUnitOfWork>();
-        var decoratedHandler = new Mock<ICommandHandler<TestCommand, TestResult>>();
-        decoratedHandler.Setup(h => h.Handle(command)).ThrowsAsync(exception);
+        var decoratedHandler = new Mock<IMessageHandler<TestMessage, TestResult>>();
+        decoratedHandler.Setup(h => h.Handle(message)).ThrowsAsync(exception);
         
-        var decorator = new UnitOfWorkDecorator<TestCommand, TestResult>(
+        var decorator = new UnitOfWorkDecorator<TestMessage, TestResult>(
             unitOfWork.Object, decoratedHandler.Object);
         
         // Act & Assert
         var thrownException = await Assert.ThrowsAsync<InvalidOperationException>(
-            () => decorator.Handle(command));
+            () => decorator.Handle(message));
         
         Assert.Same(exception, thrownException);
         

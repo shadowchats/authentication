@@ -8,4 +8,4 @@
 
 namespace Shadowchats.Authentication.Core.Application.Interfaces;
 
-public interface ICommand<TResult>;
+public interface IMessage<TResult>;

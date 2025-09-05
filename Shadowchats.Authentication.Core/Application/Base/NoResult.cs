@@ -6,9 +6,11 @@
 // (at your option) any later version. See the LICENSE file for details.
 // For full copyright and authorship information, see the COPYRIGHT file.
 
-namespace Shadowchats.Authentication.Core.Application.Interfaces;
+namespace Shadowchats.Authentication.Core.Application.Base;
 
-public interface ICommandBus
+public class NoResult
 {
-    Task<TResult> Execute<TCommand, TResult>(TCommand command) where TCommand : ICommand<TResult>;
+    private NoResult() { }
+
+    public static readonly NoResult Value = new();
 }

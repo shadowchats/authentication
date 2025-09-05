@@ -9,47 +9,46 @@
 using Microsoft.Extensions.DependencyInjection;
 using Moq;
 using Shadowchats.Authentication.Core.Application.Interfaces;
-using Shadowchats.Authentication.Infrastructure.Bus;
 using Shadowchats.Authentication.Infrastructure.Tests.Bus.Shadowchats.Authentication.Infrastructure.Tests.Bus.Fakes;
 
 namespace Shadowchats.Authentication.Infrastructure.Tests.Bus;
 
-public class CommandBusTests
+public class BusTests
 {
     [Fact]
     public async Task Execute_Test()
     {
         // Arrange
         var expectedResult = new TestResult { Value = "test" };
-        var command = new TestCommand { Data = "input" };
+        var message = new TestMessage { Data = "input" };
         
-        var handler = new Mock<ICommandHandler<TestCommand, TestResult>>();
-        handler.Setup(h => h.Handle(command)).ReturnsAsync(expectedResult);
+        var handler = new Mock<IMessageHandler<TestMessage, TestResult>>();
+        handler.Setup(h => h.Handle(message)).ReturnsAsync(expectedResult);
         
         var services = new ServiceCollection();
         services.AddSingleton(handler.Object);
         var serviceProvider = services.BuildServiceProvider();
         
-        var commandBus = new CommandBus(serviceProvider);
+        var commandBus = new Infrastructure.Bus.Bus(serviceProvider);
         
         // Act
-        var result = await commandBus.Execute<TestCommand, TestResult>(command);
+        var result = await commandBus.Execute<TestMessage, TestResult>(message);
         
         // Assert
         Assert.Equal(expectedResult, result);
-        handler.Verify(h => h.Handle(command), Times.Once);
+        handler.Verify(h => h.Handle(message), Times.Once);
     }
     
     [Fact]
     public async Task Execute_InvalidOperationException_Test()
     {
         // Arrange
-        var command = new TestCommand { Data = "input" };
+        var message = new TestMessage { Data = "input" };
         var serviceProvider = new ServiceCollection().BuildServiceProvider();
-        var commandBus = new CommandBus(serviceProvider);
+        var commandBus = new Infrastructure.Bus.Bus(serviceProvider);
         
         // Act & Assert
         await Assert.ThrowsAsync<InvalidOperationException>(
-            () => commandBus.Execute<TestCommand, TestResult>(command));
+            () => commandBus.Execute<TestMessage, TestResult>(message));
     }
 }

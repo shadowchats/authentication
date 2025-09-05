@@ -12,7 +12,7 @@ namespace Shadowchats.Authentication.Infrastructure.Tests.Bus
 {
     namespace Shadowchats.Authentication.Infrastructure.Tests.Bus.Fakes
     {
-        internal class TestCommand : ICommand<TestResult>
+        internal class TestMessage : IMessage<TestResult>
         {
             public string Data { get; set; } = string.Empty;
         }

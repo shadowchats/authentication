@@ -15,68 +15,58 @@ using Shadowchats.Authentication.Infrastructure.Bus;
 using Shadowchats.Authentication.Infrastructure.Bus.Decorators;
 using Shadowchats.Authentication.Infrastructure.Identity;
 using Shadowchats.Authentication.Infrastructure.Persistence;
+using Shadowchats.Authentication.Infrastructure.Scheduling;
 using Shadowchats.Authentication.Infrastructure.System;
 
 namespace Shadowchats.Authentication.Presentation.CompositionRoot.Extensions;
 
 public static class ServiceCollectionExtensions
 {
+    
+    
     public static IServiceCollection
         AddInfrastructure(this IServiceCollection services, IConfiguration configuration) => services
-        .AddBus()
-        .AddPersistence(configuration)
         .AddSystem()
-        .AddIdentity(configuration);
-    
-    private static IServiceCollection AddBus(this IServiceCollection services)
-    {
-        services.Decorate(typeof(ICommandHandler<,>), typeof(UnitOfWorkDecorator<,>));
-        services.Decorate(typeof(ICommandHandler<,>), typeof(LoggingDecorator<,>));
+        .AddIdentity(configuration)
+        .AddPersistence(configuration)
+        .AddScheduling()
+        .AddBus();
 
-        services.AddScoped<ICommandBus, CommandBus>();
+    private static IServiceCollection AddBus(this IServiceCollection services) => services
+        .Decorate(typeof(IMessageHandler<,>), typeof(UnitOfWorkDecorator<,>))
+        .Decorate(typeof(IMessageHandler<,>), typeof(LoggingDecorator<,>))
+        .AddScoped<IBus, Bus>();
 
-        return services;
-    }
+    private static IServiceCollection AddPersistence(this IServiceCollection services, IConfiguration configuration) =>
+        services
+            .AddScoped<AuthenticationDbContext>(_ =>
+                new AuthenticationDbContext(configuration.GetValue<string>("Persistence:PostgresConnectionString")))
+            .AddScoped<IUnitOfWork, UnitOfWork>()
+            .AddScoped<IPersistenceContext, PersistenceContext>()
+            .AddScoped<IAggregateRootRepository<Account>, AccountRepository>()
+            .AddScoped<IAggregateRootRepository<Session>, SessionRepository>();
 
-    private static IServiceCollection AddPersistence(this IServiceCollection services, IConfiguration configuration)
-    {
-        services.AddScoped<AuthenticationDbContext>(_ =>
-            new AuthenticationDbContext(configuration.GetValue<string>("Persistence:PostgresConnectionString")));
-        services.AddScoped<IUnitOfWork, UnitOfWork>();
-        services.AddScoped<IPersistenceContext, PersistenceContext>();
-        services.AddScoped<IAggregateRootRepository<Account>, AccountRepository>();
-        services.AddScoped<IAggregateRootRepository<Session>, SessionRepository>();
-        
-        return services;
-    }
-    
-    private static IServiceCollection AddSystem(this IServiceCollection services)
-    {
-        services.AddSingleton<IDateTimeProvider, DateTimeProvider>();
-        services.AddSingleton<IGuidGenerator, GuidGenerator>();
-        
-        return services;
-    }
-    
-    private static IServiceCollection AddIdentity(this IServiceCollection services, IConfiguration configuration)
-    {
-        services.Configure<JwtSettings>(configuration.GetSection("Identity:JwtSettings"));
-        services.PostConfigure<JwtSettings>(opts =>
-            opts.SecretKey = Convert.FromBase64String(configuration["Identity:JwtSettings:SecretKey"]!));
-        
-        services.AddSingleton<IRefreshTokenGenerator, RefreshTokenGenerator>();
-        services.AddSingleton<IAccessTokenIssuer, AccessTokenIssuer>();
-        services.AddSingleton<ISaltsManager, SaltsManager>();
-        services.AddSingleton<IPasswordHasher, PasswordHasher>();
-        
-        return services;
-    }
-    
-    public static IServiceCollection AddApplication(this IServiceCollection services) => services.Scan(scan => scan
-        .FromAssemblyOf<ICommandBus>()
-        .AddClasses(c => c.AssignableTo(typeof(ICommandHandler<,>)))
-        .AsImplementedInterfaces()
-        .WithScopedLifetime());
+    private static IServiceCollection AddSystem(this IServiceCollection services) => services
+        .AddSingleton<IDateTimeProvider, DateTimeProvider>()
+        .AddSingleton<IGuidGenerator, GuidGenerator>();
+
+    private static IServiceCollection AddIdentity(this IServiceCollection services, IConfiguration configuration) =>
+        services.Configure<JwtSettings>(configuration.GetSection("Identity:JwtSettings"))
+            .PostConfigure<JwtSettings>(opts =>
+                opts.SecretKey = Convert.FromBase64String(configuration["Identity:JwtSettings:SecretKey"]!))
+            .AddSingleton<IRefreshTokenGenerator, RefreshTokenGenerator>()
+            .AddSingleton<IAccessTokenIssuer, AccessTokenIssuer>()
+            .AddSingleton<ISaltsManager, SaltsManager>()
+            .AddSingleton<IPasswordHasher, PasswordHasher>();
+
+    private static IServiceCollection AddScheduling(this IServiceCollection services) =>
+        services.AddHostedService<RevokeExpiredSessionsScheduler>();
+
+    public static IServiceCollection AddApplication(this IServiceCollection services) => services.Scan(scan =>
+        scan.FromAssembliesOf(typeof(IBus))
+            .AddClasses(c => c.AssignableTo(typeof(IMessageHandler<,>)))
+            .AsImplementedInterfaces()
+            .WithScopedLifetime());
     
     public static IServiceCollection AddCustomLogging(this IServiceCollection services)
     {

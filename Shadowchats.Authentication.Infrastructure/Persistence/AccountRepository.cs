@@ -8,8 +8,6 @@
 
 using System.Linq.Expressions;
 using Microsoft.EntityFrameworkCore;
-using Npgsql;
-using Shadowchats.Authentication.Core.Application.Exceptions;
 using Shadowchats.Authentication.Core.Application.Interfaces;
 using Shadowchats.Authentication.Core.Domain.Aggregates;
 
