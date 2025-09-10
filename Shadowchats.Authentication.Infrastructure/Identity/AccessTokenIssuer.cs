@@ -35,7 +35,7 @@ public class AccessTokenIssuer : IAccessTokenIssuer
             NotBefore = now,
             Issuer = _jwtSettings.Issuer,
             Audience = _jwtSettings.Audience,
-            SigningCredentials = new SigningCredentials(new SymmetricSecurityKey(_jwtSettings.SecretKey),
+            SigningCredentials = new SigningCredentials(new SymmetricSecurityKey(_jwtSettings.SecretKeyBytes),
                 SecurityAlgorithms.HmacSha256)
         };
 
@@ -59,7 +59,7 @@ public class AccessTokenIssuer : IAccessTokenIssuer
                 ValidateLifetime = true,
                 ClockSkew = TimeSpan.Zero,
                 ValidateIssuerSigningKey = true,
-                IssuerSigningKey = new SymmetricSecurityKey(_jwtSettings.SecretKey),
+                IssuerSigningKey = new SymmetricSecurityKey(_jwtSettings.SecretKeyBytes),
                 ValidAlgorithms = [SecurityAlgorithms.HmacSha256]
             };
 

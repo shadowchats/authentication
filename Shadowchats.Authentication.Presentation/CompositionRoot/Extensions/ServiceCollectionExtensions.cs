@@ -22,12 +22,10 @@ namespace Shadowchats.Authentication.Presentation.CompositionRoot.Extensions;
 
 public static class ServiceCollectionExtensions
 {
-    
-    
     public static IServiceCollection
         AddInfrastructure(this IServiceCollection services, IConfiguration configuration) => services
         .AddSystem()
-        .AddIdentity(configuration)
+        .AddIdentity()
         .AddPersistence(configuration)
         .AddScheduling()
         .AddBus();
@@ -40,7 +38,7 @@ public static class ServiceCollectionExtensions
     private static IServiceCollection AddPersistence(this IServiceCollection services, IConfiguration configuration) =>
         services
             .AddScoped<AuthenticationDbContext>(_ =>
-                new AuthenticationDbContext(configuration.GetValue<string>("Persistence:PostgresConnectionString")))
+                new AuthenticationDbContext(configuration.GetRequiredValue<string>("PostgresConnectionString")))
             .AddScoped<IUnitOfWork, UnitOfWork>()
             .AddScoped<IPersistenceContext, PersistenceContext>()
             .AddScoped<IAggregateRootRepository<Account>, AccountRepository>()
@@ -50,15 +48,18 @@ public static class ServiceCollectionExtensions
         .AddSingleton<IDateTimeProvider, DateTimeProvider>()
         .AddSingleton<IGuidGenerator, GuidGenerator>();
 
-    private static IServiceCollection AddIdentity(this IServiceCollection services, IConfiguration configuration) =>
-        services.Configure<JwtSettings>(configuration.GetSection("Identity:JwtSettings"))
-            .PostConfigure<JwtSettings>(opts =>
-                opts.SecretKey = Convert.FromBase64String(configuration["Identity:JwtSettings:SecretKey"]!))
-            .AddSingleton<IRefreshTokenGenerator, RefreshTokenGenerator>()
-            .AddSingleton<IAccessTokenIssuer, AccessTokenIssuer>()
-            .AddSingleton<ISaltsManager, SaltsManager>()
+    private static IServiceCollection AddIdentity(this IServiceCollection services)
+    {
+        services.AddOptions<JwtSettings>().BindConfiguration("JwtSettings")
+            .Validate(settings => settings.SecretKeyBytes.Length >= 32).ValidateDataAnnotations().ValidateOnStart();
+
+        services.AddSingleton<IRefreshTokenGenerator, RefreshTokenGenerator>()
+            .AddSingleton<IAccessTokenIssuer, AccessTokenIssuer>().AddSingleton<ISaltsManager, SaltsManager>()
             .AddSingleton<IPasswordHasher, PasswordHasher>();
 
+        return services;
+    }
+    
     private static IServiceCollection AddScheduling(this IServiceCollection services) =>
         services.AddHostedService<RevokeExpiredSessionsScheduler>();
 

@@ -21,7 +21,7 @@ public class AccessTokenIssuerTests
         // Arrange
         var jwtSettings = Options.Create(new JwtSettings
         {
-            SecretKey = Convert.FromBase64String("NjJPS3QyVk10aGdueU9HQ1VhekxpNmV6THlmZGFDcTk="),
+            SecretKeyBase64 = "NjJPS3QyVk10aGdueU9HQ1VhekxpNmV6THlmZGFDcTk=",
             Issuer = "Test",
             Audience = "Test"
         });
@@ -67,7 +67,7 @@ public class AccessTokenIssuerTests
         // Arrange
         var jwtSettings = Options.Create(new JwtSettings
         {
-            SecretKey = Convert.FromBase64String("NjJPS3QyVk10aGdueU9HQ1VhekxpNmV6THlmZGFDcTk="),
+            SecretKeyBase64 = "NjJPS3QyVk10aGdueU9HQ1VhekxpNmV6THlmZGFDcTk=",
             Issuer = "Test",
             Audience = "Test"
         });
@@ -87,7 +87,7 @@ public class AccessTokenIssuerTests
         // Arrange
         var jwtSettings = Options.Create(new JwtSettings
         {
-            SecretKey = Convert.FromBase64String("NjJPS3QyVk10aGdueU9HQ1VhekxpNmV6THlmZGFDcTk="),
+            SecretKeyBase64 = "NjJPS3QyVk10aGdueU9HQ1VhekxpNmV6THlmZGFDcTk=",
             Issuer = "Test",
             Audience = "Test"
         });

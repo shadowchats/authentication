@@ -5,9 +5,14 @@
 .idea/
 
 Shadowchats.Authentication.sln.DotSettings.user
+Shadowchats.ApiGateway.sln.DotSettings
 
 
 Shadowchats.Authentication.Presentation/Properties
 
 *.json
+**/*.json
+!*example.json
+!**/*example.json
 *.pfx
+**/*.pfx

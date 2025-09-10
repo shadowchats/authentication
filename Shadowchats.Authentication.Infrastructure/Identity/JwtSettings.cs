@@ -6,50 +6,32 @@
 // (at your option) any later version. See the LICENSE file for details.
 // For full copyright and authorship information, see the COPYRIGHT file.
 
-using Shadowchats.Authentication.Core.Domain.Exceptions;
+using System.ComponentModel.DataAnnotations;
 
 namespace Shadowchats.Authentication.Infrastructure.Identity;
 
-public class JwtSettings
+public record JwtSettings
 {
-    public required byte[] SecretKey
-    {
-        get => _secretKey;
-        set
-        {
-            if (value.Length < 32)
-                throw new BugException("JWT SecretKey must be at least 32 bytes.");
-
-            _secretKey = value;
-        }
-    }
-    private byte[] _secretKey = null!;
-        
-    public required string Issuer
-    {
-        get => _issuer;
-        set
-        {
-            if (string.IsNullOrWhiteSpace(value))
-                throw new BugException("JWT Issuer is required.");
-
-            _issuer = value;
-        }
-    }
-    private string _issuer = null!;
-        
-    public required string Audience
-    {
-        get => _audience;
-        set
-        {
-            if (string.IsNullOrWhiteSpace(value))
-                throw new BugException("JWT Audience is required.");
-
-            _audience = value;
-        }
-    }
-    private string _audience = null!;
-        
     public const int TokenLifitimeInMinutes = 15;
+    
+    [Required]
+    public required string SecretKeyBase64
+    {
+        get => _secretKeyBase64;
+        init
+        {
+            _secretKeyBase64 = value;
+            SecretKeyBytes = Convert.FromBase64String(value);
+        }
+    }
+
+    public byte[] SecretKeyBytes { get; private init; } = null!;
+    
+    [Required]
+    public required string Issuer { get; init; }
+    
+    [Required]
+    public required string Audience { get; init; }
+
+    private readonly string _secretKeyBase64 = null!;
 }
