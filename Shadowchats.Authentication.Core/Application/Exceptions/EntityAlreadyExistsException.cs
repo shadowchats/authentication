@@ -13,9 +13,12 @@ using Shadowchats.Authentication.Core.Domain.Exceptions;
 
 namespace Shadowchats.Authentication.Core.Application.Exceptions;
 
-public class EntityAlreadyExistsException<TEntity, TProperty>(Expression<Func<TEntity, TProperty>> propertyExpression)
+public class EntityAlreadyExistsException<TEntity, TProperty>
     : Exception where TEntity : Entity<TEntity>
 {
+    public EntityAlreadyExistsException(Expression<Func<TEntity, TProperty>> propertyExpression) =>
+        _propertyMember = GetMemberInfo(propertyExpression);
+    
     public bool IsConflictOn(Expression<Func<TEntity, TProperty>> propertyExpression) =>
         GetMemberInfo(propertyExpression) == _propertyMember;
 
@@ -29,5 +32,5 @@ public class EntityAlreadyExistsException<TEntity, TProperty>(Expression<Func<TE
         };
     }
 
-    private readonly MemberInfo _propertyMember = GetMemberInfo(propertyExpression);
+    private readonly MemberInfo _propertyMember;
 }

@@ -16,37 +16,50 @@ namespace Shadowchats.Authentication.Core.Application.UseCases
 {
     namespace LogoutAll
     {
-        public class LogoutAllCommand : IMessage<NoResult>
+        public record LogoutAllCommand : ICommand<NoResult>
         {
             public required string Login { get; init; }
             
             public required string Password { get; init; }
         }
 
-        public class LogoutAllHandler(
-            IAggregateRootRepository<Account> accountRepository,
-            IAggregateRootRepository<Session> sessionRepository,
-            IPersistenceContext persistenceContext,
-            IPasswordHasher passwordHasher
-        ) : IMessageHandler<LogoutAllCommand, NoResult>
+        public class LogoutAllHandler : IMessageHandler<LogoutAllCommand, NoResult>
         {
+            public LogoutAllHandler(IAggregateRootRepository<Account> accountRepository,
+                IAggregateRootRepository<Session> sessionRepository, IPersistenceContext persistenceContext,
+                IPasswordHasher passwordHasher)
+            {
+                _accountRepository = accountRepository;
+                _sessionRepository = sessionRepository;
+                _persistenceContext = persistenceContext;
+                _passwordHasher = passwordHasher;
+            }
+
             public async Task<NoResult> Handle(LogoutAllCommand command)
             {
-                var account = await accountRepository.Find(a => a.Credentials.Login == command.Login);
-                if (account is null || !account.Credentials.VerifyPassword(passwordHasher, command.Password))
+                var account = await _accountRepository.Find(a => a.Credentials.Login == command.Login);
+                if (account is null || !account.Credentials.VerifyPassword(_passwordHasher, command.Password))
                     throw new AuthenticationFailedException("Login and/or password is invalid.");
 
-                var sessions = await sessionRepository.FindAll(s => s.AccountId == account.Guid && s.IsActive);
+                var sessions = await _sessionRepository.FindAll(s => s.AccountId == account.Guid && s.IsActive);
                 if (sessions.Count > 0)
                 {
                     foreach (var session in sessions)
                         session.Revoke();
 
-                    await persistenceContext.SaveChanges();
+                    await _persistenceContext.SaveChanges();
                 }
                 
                 return NoResult.Value;
             }
+            
+            private readonly IAggregateRootRepository<Account> _accountRepository;
+
+            private readonly IAggregateRootRepository<Session> _sessionRepository;
+            
+            private readonly IPersistenceContext _persistenceContext;
+
+            private readonly IPasswordHasher _passwordHasher;
         }
     }
 }

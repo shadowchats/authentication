@@ -11,39 +11,59 @@ using Shadowchats.Authentication.Core.Domain.Exceptions;
 
 namespace Shadowchats.Authentication.Infrastructure.Persistence;
 
-public class UnitOfWork(AuthenticationDbContext dbContext) : IUnitOfWork
+public class UnitOfWork : IUnitOfWork
 {
-    public async Task Begin()
+    public async Task Begin(AuthenticationDbContext dbContext, IUnitOfWork.TransactionMode transactionMode)
     {
-        if (_transaction != null)
-            throw new BugException("Transaction has already begun.");
+        if (_dbContext is not null)
+            throw new BugException("Is already begun.");
         
-        _transaction = await dbContext.Database.BeginTransactionAsync();
+        _dbContext = dbContext;
+
+        _transaction = transactionMode switch
+        {
+            IUnitOfWork.TransactionMode.None => null,
+            IUnitOfWork.TransactionMode.WithReadCommitted => await _dbContext.Database.BeginTransactionAsync(),
+            _ => throw new BugException("Transaction mode is not supported.")
+        };
     }
 
-    public async Task Commit()
+    public async Task End(IUnitOfWork.Outcome outcome)
     {
-        if (_transaction == null)
-            throw new BugException("Transaction has not yet begun or has already finished.");
-
-        await _transaction.CommitAsync();
-        await _transaction.DisposeAsync();
-        _transaction = null;
+        if (_dbContext is null)
+            throw new BugException("Is not yet begun or is already ended.");
         
-        dbContext.ChangeTracker.Clear();
+        _dbContext = null;
+
+        if (_transaction is not null)
+        {
+            try
+            {
+                switch (outcome)
+                {
+                    case IUnitOfWork.Outcome.Success:
+                        await _transaction.CommitAsync();
+                        break;
+                    case IUnitOfWork.Outcome.Failure:
+                        await _transaction.RollbackAsync();
+                        break;
+                    default:
+                        throw new BugException("Outcome is not supported.");
+                }
+            }
+            finally
+            {
+                await _transaction.DisposeAsync();
+
+                _transaction = null;
+            }
+        }
     }
 
-    public async Task Rollback()
-    {
-        if (_transaction == null)
-            throw new BugException("Transaction has not yet begun or has already finished.");
-        
-        await _transaction.RollbackAsync();
-        await _transaction.DisposeAsync();
-        _transaction = null;
-        
-        dbContext.ChangeTracker.Clear();
-    }
+    public AuthenticationDbContext DbContext =>
+        _dbContext ?? throw new BugException("Is not yet begun or is already ended.");
+
+    private AuthenticationDbContext? _dbContext;
 
     private IDbContextTransaction? _transaction;
 }

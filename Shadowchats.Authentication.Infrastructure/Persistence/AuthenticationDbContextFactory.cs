@@ -6,11 +6,19 @@
 // (at your option) any later version. See the LICENSE file for details.
 // For full copyright and authorship information, see the COPYRIGHT file.
 
+using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Design;
 
 namespace Shadowchats.Authentication.Infrastructure.Persistence;
 
-public class AuthenticationDbContextFactory : IDesignTimeDbContextFactory<AuthenticationDbContext>
+public class AuthenticationDbContextFactory : IDesignTimeDbContextFactory<AuthenticationDbContext.ReadWrite>
 {
-    public AuthenticationDbContext CreateDbContext(string[] args) => new(args[0]);
+    public AuthenticationDbContext.ReadWrite CreateDbContext(string[] args)
+    {
+        var optionsBuilder = new DbContextOptionsBuilder<AuthenticationDbContext>();
+        
+        optionsBuilder.UseNpgsql(args[0]);
+
+        return new AuthenticationDbContext.ReadWrite(optionsBuilder.Options);
+    }
 }

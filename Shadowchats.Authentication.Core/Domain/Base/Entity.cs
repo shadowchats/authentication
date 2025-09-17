@@ -7,22 +7,17 @@
 // For full copyright and authorship information, see the COPYRIGHT file.
 
 using System.ComponentModel;
-using JetBrains.Annotations;
 using Shadowchats.Authentication.Core.Domain.Exceptions;
 
 namespace Shadowchats.Authentication.Core.Domain.Base;
 
 public abstract class Entity<TEntity> where TEntity : Entity<TEntity>
 {
-    [UsedImplicitly]
-    protected Entity() { }
-    
     protected Entity(Guid guid)
     {
-        if (guid == Guid.Empty)
-            throw new InvariantViolationException("Guid is empty.");
-        
         Guid = guid;
+        _domainEvents = [];
+        DomainEvents = _domainEvents.AsReadOnly();
     }
 
     public void AddDomainEvent(IDomainEvent domainEventItem) => _domainEvents.Add(domainEventItem);
@@ -47,7 +42,7 @@ public abstract class Entity<TEntity> where TEntity : Entity<TEntity>
 
     public Guid Guid { get; }
     
-    public IReadOnlyCollection<IDomainEvent> DomainEvents => _domainEvents.AsReadOnly();
+    public IReadOnlyList<IDomainEvent> DomainEvents { get; }
 
-    private readonly List<IDomainEvent> _domainEvents = [];
+    private readonly List<IDomainEvent> _domainEvents;
 }

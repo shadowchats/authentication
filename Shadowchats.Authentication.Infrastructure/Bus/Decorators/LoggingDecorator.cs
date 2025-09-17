@@ -7,28 +7,33 @@
 // For full copyright and authorship information, see the COPYRIGHT file.
 
 using Microsoft.Extensions.Logging;
+using Shadowchats.Authentication.Core.Application.Base;
 using Shadowchats.Authentication.Core.Application.Interfaces;
 using Shadowchats.Authentication.Core.Domain.Exceptions;
 
 namespace Shadowchats.Authentication.Infrastructure.Bus.Decorators;
 
-public class LoggingDecorator<TMessage, TResult>(
-    ILogger<LoggingDecorator<TMessage, TResult>> logger,
-    IMessageHandler<TMessage, TResult> decorated)
-    : IMessageHandler<TMessage, TResult>
-    where TMessage : IMessage<TResult>
+public class LoggingDecorator<TMessage, TResult> : IMessageHandler<TMessage, TResult> where TMessage : IMessage<TResult>
 {
+    public LoggingDecorator(ILogger<LoggingDecorator<TMessage, TResult>> logger, IMessageHandler<TMessage, TResult> decorated)
+    {
+        _logger = logger;
+        _decorated = decorated;
+        _messageName = typeof(TMessage).Name;
+        _handlerName = decorated.GetType().Name;
+    }
+
     public async Task<TResult> Handle(TMessage message)
     {
-        logger.LogInformation(
+        _logger.LogInformation(
             "Stage: {Stage}. MessageName: {MessageName}. HandlerName: {HandlerName}. Payload: {@Message}", 
             "Start", _messageName, _handlerName, message);
 
         try
         {
-            var result = await decorated.Handle(message);
+            var result = await _decorated.Handle(message);
 
-            logger.LogInformation(
+            _logger.LogInformation(
                 "Stage: {Stage}. MessageName: {MessageName}. HandlerName: {HandlerName}. Payload: {@Message}. Result: {@Result}",
                 "Success", _messageName, _handlerName, message, result);
 
@@ -36,7 +41,7 @@ public class LoggingDecorator<TMessage, TResult>(
         }
         catch (BaseException expectedException) when (expectedException is not BugException)
         {
-            logger.LogInformation(expectedException,
+            _logger.LogInformation(expectedException,
                 "Stage: {Stage}. MessageName: {MessageName}. HandlerName: {HandlerName}. Payload: {@Message}",
                 "ExpectedFailure", _messageName, _handlerName, message);
 
@@ -44,7 +49,7 @@ public class LoggingDecorator<TMessage, TResult>(
         }
         catch (Exception unexpectedException)
         {
-            logger.LogError(unexpectedException,
+            _logger.LogError(unexpectedException,
                 "Stage: {Stage}. CommandName: {CommandName}. HandlerName: {HandlerName}. Payload: {@Command}",
                 "UnexpectedFailure", _messageName, _handlerName, message);
 
@@ -52,7 +57,11 @@ public class LoggingDecorator<TMessage, TResult>(
         }
     }
 
-    private readonly string _messageName = typeof(TMessage).Name;
+    private readonly ILogger<LoggingDecorator<TMessage, TResult>> _logger;
+    
+    private readonly IMessageHandler<TMessage, TResult> _decorated;
 
-    private readonly string _handlerName = decorated.GetType().Name;
+    private readonly string _messageName;
+
+    private readonly string _handlerName;
 }

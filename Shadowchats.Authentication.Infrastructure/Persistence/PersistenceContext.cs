@@ -6,13 +6,18 @@ using Shadowchats.Authentication.Core.Domain.Aggregates;
 
 namespace Shadowchats.Authentication.Infrastructure.Persistence;
 
-public class PersistenceContext(AuthenticationDbContext dbContext) : IPersistenceContext
+public class PersistenceContext : IPersistenceContext
 {
+    public PersistenceContext(IUnitOfWork unitOfWork)
+    {
+        _unitOfWork = unitOfWork;
+    }
+    
     public async Task SaveChanges()
     {
         try
         {
-            await dbContext.SaveChangesAsync();
+            await _unitOfWork.DbContext.SaveChangesAsync();
         }
         catch (DbUpdateException ex) when (ex.InnerException is PostgresException
                                            {
@@ -22,4 +27,6 @@ public class PersistenceContext(AuthenticationDbContext dbContext) : IPersistenc
             throw new EntityAlreadyExistsException<Account, string>(a => a.Credentials.Login);
         }
     }
+    
+    private readonly IUnitOfWork _unitOfWork;
 }

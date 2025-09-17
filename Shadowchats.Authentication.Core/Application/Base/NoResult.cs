@@ -10,7 +10,12 @@ namespace Shadowchats.Authentication.Core.Application.Base;
 
 public class NoResult
 {
+    static NoResult()
+    {
+        Value = new NoResult();
+    }
+    
     private NoResult() { }
 
-    public static readonly NoResult Value = new();
+    public static readonly NoResult Value;
 }

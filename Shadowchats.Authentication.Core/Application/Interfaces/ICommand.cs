@@ -1,4 +1,4 @@
-﻿// Shadowchats — Copyright (C) 2025
+// Shadowchats — Copyright (C) 2025
 // Dorovskoy Alexey Vasilievich (One290 / 0ne290) <lenya.dorovskoy@mail.ru>
 // This program is free software: you can redistribute it and/or modify
 // it under the terms of the GNU Affero General Public License as published by
@@ -6,9 +6,8 @@
 // (at your option) any later version. See the LICENSE file for details.
 // For full copyright and authorship information, see the COPYRIGHT file.
 
-namespace Shadowchats.Authentication.Core.Domain.Exceptions;
+using Shadowchats.Authentication.Core.Application.Base;
 
-public class InvariantViolationException : BaseException
-{
-    public InvariantViolationException(string message) : base(message) { }
-}
+namespace Shadowchats.Authentication.Core.Application.Interfaces;
+
+public interface ICommand<TResult> : IMessage<TResult>;

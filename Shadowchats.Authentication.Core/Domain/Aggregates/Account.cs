@@ -6,7 +6,6 @@
 // (at your option) any later version. See the LICENSE file for details.
 // For full copyright and authorship information, see the COPYRIGHT file.
 
-using JetBrains.Annotations;
 using Shadowchats.Authentication.Core.Domain.Base;
 using Shadowchats.Authentication.Core.Domain.Interfaces;
 using Shadowchats.Authentication.Core.Domain.ValueObjects;
@@ -15,12 +14,9 @@ namespace Shadowchats.Authentication.Core.Domain.Aggregates;
 
 public class Account : AggregateRoot<Account>
 {
-    [UsedImplicitly]
-    private Account() { }
-    
     public static Account Create(IGuidGenerator guidGenerator, Credentials credentials) => new(guidGenerator.Generate(), credentials);
     
     private Account(Guid guid, Credentials credentials) : base(guid) => Credentials = credentials;
 
-    public Credentials Credentials { get; } = null!;
+    public Credentials Credentials { get; }
 }

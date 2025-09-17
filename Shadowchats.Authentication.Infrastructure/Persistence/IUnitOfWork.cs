@@ -10,7 +10,12 @@ namespace Shadowchats.Authentication.Infrastructure.Persistence;
 
 public interface IUnitOfWork
 {
-    Task Begin();
-    Task Commit();
-    Task Rollback();
+    public enum Outcome { Success, Failure }
+    
+    public enum TransactionMode { None, WithReadCommitted }
+    
+    AuthenticationDbContext DbContext { get; }
+    
+    Task Begin(AuthenticationDbContext dbContext, TransactionMode transactionMode);
+    Task End(Outcome outcome);
 }

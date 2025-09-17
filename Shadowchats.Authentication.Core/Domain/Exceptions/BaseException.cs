@@ -8,4 +8,7 @@
 
 namespace Shadowchats.Authentication.Core.Domain.Exceptions;
 
-public abstract class BaseException(string message) : Exception(message);
+public class BaseException : Exception
+{
+    protected BaseException(string message) : base(message) { }
+}

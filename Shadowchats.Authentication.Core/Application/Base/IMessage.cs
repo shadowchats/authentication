@@ -6,20 +6,6 @@
 // (at your option) any later version. See the LICENSE file for details.
 // For full copyright and authorship information, see the COPYRIGHT file.
 
-using Shadowchats.Authentication.Core.Application.Interfaces;
+namespace Shadowchats.Authentication.Core.Application.Base;
 
-namespace Shadowchats.Authentication.Infrastructure.Tests.Bus
-{
-    namespace Shadowchats.Authentication.Infrastructure.Tests.Bus.Fakes
-    {
-        internal class TestMessage : IMessage<TestResult>
-        {
-            public string Data { get; set; } = string.Empty;
-        }
-
-        internal class TestResult
-        {
-            public string Value { get; set; } = string.Empty;
-        }
-    }
-}
+public interface IMessage<TResult>;

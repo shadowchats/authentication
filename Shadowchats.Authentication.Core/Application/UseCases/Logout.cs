@@ -14,25 +14,34 @@ namespace Shadowchats.Authentication.Core.Application.UseCases
 {
     namespace Logout
     {
-        public class LogoutCommand : IMessage<NoResult>
+        public record LogoutCommand : ICommand<NoResult>
         {
             public required string RefreshToken { get; init; }
         }
 
-        public class LogoutHandler(IAggregateRootRepository<Session> sessionRepository, IPersistenceContext persistenceContext)
-            : IMessageHandler<LogoutCommand, NoResult>
+        public class LogoutHandler : IMessageHandler<LogoutCommand, NoResult>
         {
+            public LogoutHandler(IAggregateRootRepository<Session> sessionRepository, IPersistenceContext persistenceContext)
+            {
+                _sessionRepository = sessionRepository;
+                _persistenceContext = persistenceContext;
+            }
+
             public async Task<NoResult> Handle(LogoutCommand command)
             {
-                var session = await sessionRepository.Find(s => s.RefreshToken == command.RefreshToken);
+                var session = await _sessionRepository.Find(s => s.RefreshToken == command.RefreshToken);
                 if (session is not null)
                 {
                     session.Revoke();
-                    await persistenceContext.SaveChanges();
+                    await _persistenceContext.SaveChanges();
                 }
 
                 return NoResult.Value;
             }
+            
+            private readonly IAggregateRootRepository<Session> _sessionRepository;
+            
+            private readonly IPersistenceContext _persistenceContext;
         }
     }
 }

@@ -9,14 +9,22 @@
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 using Shadowchats.Authentication.Core.Domain.Aggregates;
-using Shadowchats.Authentication.Core.Domain.Exceptions;
 
 namespace Shadowchats.Authentication.Infrastructure.Persistence;
 
-public class AuthenticationDbContext(string? connectionString) : DbContext
+public abstract class AuthenticationDbContext : DbContext
 {
-    protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder) =>
-        optionsBuilder.UseNpgsql(_connectionString);
+    public class ReadWrite : AuthenticationDbContext
+    {
+        public ReadWrite(DbContextOptions<AuthenticationDbContext> options) : base(options) { }
+    }
+
+    public class ReadOnly : AuthenticationDbContext
+    {
+        public ReadOnly(DbContextOptions<AuthenticationDbContext> options) : base(options) { }
+    }
+
+    public AuthenticationDbContext(DbContextOptions<AuthenticationDbContext> options) : base(options) { }
     
     private class AccountEntityTypeConfiguration : IEntityTypeConfiguration<Account>
     {
@@ -79,7 +87,7 @@ public class AuthenticationDbContext(string? connectionString) : DbContext
             builder.HasOne<Account>()
                 .WithMany()
                 .HasForeignKey(x => x.AccountId)
-                .OnDelete(DeleteBehavior.Cascade) // при удалении аккаунта удаляются сессии
+                .OnDelete(DeleteBehavior.Cascade)
                 .IsRequired();
         }
     }
@@ -94,8 +102,4 @@ public class AuthenticationDbContext(string? connectionString) : DbContext
     public DbSet<Account> Accounts { get; set; } = null!;
         
     public DbSet<Session> Sessions { get; set; } = null!;
-
-    private readonly string _connectionString = string.IsNullOrWhiteSpace(connectionString)
-        ? throw new BugException("Connection string is empty.")
-        : connectionString;
 }

@@ -15,27 +15,38 @@ namespace Shadowchats.Authentication.Core.Application.Jobs
 {
     namespace RevokeExpiredSessions
     {
-        public class RevokeExpiredSessionsJob : IMessage<NoResult>;
+        public record RevokeExpiredSessionsJob : ICommand<NoResult>;
 
-        public class RevokeExpiredSessionsHandler(
-            IAggregateRootRepository<Session> sessionRepository,
-            IPersistenceContext persistenceContext,
-            IDateTimeProvider dateTimeProvider) : IMessageHandler<RevokeExpiredSessionsJob, NoResult>
+        public class RevokeExpiredSessionsHandler : IMessageHandler<RevokeExpiredSessionsJob, NoResult>
         {
+            public RevokeExpiredSessionsHandler(IAggregateRootRepository<Session> sessionRepository,
+                IPersistenceContext persistenceContext, IDateTimeProvider dateTimeProvider)
+            {
+                _sessionRepository = sessionRepository;
+                _persistenceContext = persistenceContext;
+                _dateTimeProvider = dateTimeProvider;
+            }
+
             public async Task<NoResult> Handle(RevokeExpiredSessionsJob _)
             {
                 var sessions =
-                    await sessionRepository.FindAll(s => s.IsActive && s.ExpiresAt < dateTimeProvider.UtcNow);
+                    await _sessionRepository.FindAll(s => s.IsActive && s.ExpiresAt < _dateTimeProvider.UtcNow);
                 if (sessions.Count > 0)
                 {
                     foreach (var session in sessions)
                         session.Revoke();
 
-                    await persistenceContext.SaveChanges();
+                    await _persistenceContext.SaveChanges();
                 }
 
                 return NoResult.Value;
             }
+
+            private readonly IAggregateRootRepository<Session> _sessionRepository;
+            
+            private readonly IPersistenceContext _persistenceContext;
+
+            private readonly IDateTimeProvider _dateTimeProvider;
         }
     }
 }

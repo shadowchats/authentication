@@ -7,12 +7,20 @@
 // For full copyright and authorship information, see the COPYRIGHT file.
 
 using Microsoft.Extensions.DependencyInjection;
+using Shadowchats.Authentication.Core.Application.Base;
 using Shadowchats.Authentication.Core.Application.Interfaces;
 
 namespace Shadowchats.Authentication.Infrastructure.Bus;
 
-public class Bus(IServiceProvider services) : IBus
+public class Bus : IBus
 {
+    public Bus(IServiceProvider services)
+    {
+        _services = services;
+    }
+
     public Task<TResult> Execute<TMessage, TResult>(TMessage message) where TMessage : IMessage<TResult> =>
-        services.GetRequiredService<IMessageHandler<TMessage, TResult>>().Handle(message);
+        _services.GetRequiredService<IMessageHandler<TMessage, TResult>>().Handle(message);
+
+    private readonly IServiceProvider _services;
 }

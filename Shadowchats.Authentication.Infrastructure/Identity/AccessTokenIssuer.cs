@@ -76,5 +76,6 @@ public class AccessTokenIssuer : IAccessTokenIssuer
     }
 
     private readonly JwtSettings _jwtSettings;
+    
     private readonly IDateTimeProvider _dateTimeProvider;
 }

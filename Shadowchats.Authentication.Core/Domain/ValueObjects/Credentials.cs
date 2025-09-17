@@ -6,7 +6,6 @@
 // (at your option) any later version. See the LICENSE file for details.
 // For full copyright and authorship information, see the COPYRIGHT file.
 
-using JetBrains.Annotations;
 using Shadowchats.Authentication.Core.Domain.Base;
 using Shadowchats.Authentication.Core.Domain.Exceptions;
 using Shadowchats.Authentication.Core.Domain.Interfaces;
@@ -15,9 +14,6 @@ namespace Shadowchats.Authentication.Core.Domain.ValueObjects;
 
 public class Credentials : ValueObject<Credentials>
 {
-    [UsedImplicitly]
-    private Credentials() { }
-    
     public static Credentials Create(IPasswordHasher passwordHasher, string login, string password)
     {
         login = login.Trim();
@@ -99,6 +95,6 @@ public class Credentials : ValueObject<Credentials>
         yield return PasswordHash;
     }
     
-    public string Login { get; private set; } = null!;
-    public string PasswordHash { get; private set; } = null!;
+    public string Login { get; }
+    public string PasswordHash { get; }
 }

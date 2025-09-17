@@ -6,6 +6,7 @@
 // (at your option) any later version. See the LICENSE file for details.
 // For full copyright and authorship information, see the COPYRIGHT file.
 
+using Microsoft.EntityFrameworkCore;
 using Serilog;
 using Serilog.Enrichers.Span;
 using Shadowchats.Authentication.Core.Application.Interfaces;
@@ -37,8 +38,10 @@ public static class ServiceCollectionExtensions
 
     private static IServiceCollection AddPersistence(this IServiceCollection services, IConfiguration configuration) =>
         services
-            .AddScoped<AuthenticationDbContext>(_ =>
-                new AuthenticationDbContext(configuration.GetRequiredValue<string>("PostgresConnectionString")))
+            .AddDbContext<AuthenticationDbContext.ReadWrite>(options =>
+                options.UseNpgsql(configuration.GetRequiredValue<string>("PostgresConnectionStrings:ReadWrite")))
+            .AddDbContext<AuthenticationDbContext.ReadOnly>(options =>
+                options.UseNpgsql(configuration.GetRequiredValue<string>("PostgresConnectionStrings:ReadOnly")))
             .AddScoped<IUnitOfWork, UnitOfWork>()
             .AddScoped<IPersistenceContext, PersistenceContext>()
             .AddScoped<IAggregateRootRepository<Account>, AccountRepository>()

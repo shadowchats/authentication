@@ -18,29 +18,33 @@ namespace Shadowchats.Authentication.Core.Application.UseCases
 {
     namespace RegisterAccount
     {
-        public class RegisterAccountCommand : IMessage<NoResult>
+        public record RegisterAccountCommand : ICommand<NoResult>
         {
             public required string Login { get; init; }
             
             public required string Password { get; init; }
         }
         
-        public class RegisterAccountHandler(
-            IAggregateRootRepository<Account> accountRepository,
-            IPersistenceContext persistenceContext,
-            IPasswordHasher passwordHasher,
-            IGuidGenerator guidGenerator)
-            : IMessageHandler<RegisterAccountCommand, NoResult>
+        public class RegisterAccountHandler : IMessageHandler<RegisterAccountCommand, NoResult>
         {
+            public RegisterAccountHandler(IAggregateRootRepository<Account> accountRepository,
+                IPersistenceContext persistenceContext, IPasswordHasher passwordHasher, IGuidGenerator guidGenerator)
+            {
+                _accountRepository = accountRepository;
+                _persistenceContext = persistenceContext;
+                _passwordHasher = passwordHasher;
+                _guidGenerator = guidGenerator;
+            }
+
             public async Task<NoResult> Handle(RegisterAccountCommand command)
             {
-                var credentials = Credentials.Create(passwordHasher, command.Login, command.Password);
-                var account = Account.Create(guidGenerator, credentials);
+                var credentials = Credentials.Create(_passwordHasher, command.Login, command.Password);
+                var account = Account.Create(_guidGenerator, credentials);
                 
-                await accountRepository.Add(account);
+                await _accountRepository.Add(account);
                 try
                 {
-                    await persistenceContext.SaveChanges();
+                    await _persistenceContext.SaveChanges();
                 }
                 catch (EntityAlreadyExistsException<Account, string> ex) when (ex.IsConflictOn(a => a.Credentials.Login))
                 {
@@ -49,6 +53,14 @@ namespace Shadowchats.Authentication.Core.Application.UseCases
 
                 return NoResult.Value;
             }
+            
+            private readonly IAggregateRootRepository<Account> _accountRepository;
+            
+            private readonly IPersistenceContext _persistenceContext;
+
+            private readonly IPasswordHasher _passwordHasher;
+            
+            private readonly IGuidGenerator _guidGenerator;
         }
     }
 }

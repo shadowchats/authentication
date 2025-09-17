@@ -6,34 +6,54 @@
 // (at your option) any later version. See the LICENSE file for details.
 // For full copyright and authorship information, see the COPYRIGHT file.
 
+using Microsoft.Extensions.DependencyInjection;
+using Shadowchats.Authentication.Core.Application.Base;
 using Shadowchats.Authentication.Core.Application.Interfaces;
+using Shadowchats.Authentication.Core.Domain.Exceptions;
 using Shadowchats.Authentication.Infrastructure.Persistence;
 
 namespace Shadowchats.Authentication.Infrastructure.Bus.Decorators;
 
-public class UnitOfWorkDecorator<TMessage, TResult>(
-    IUnitOfWork unitOfWork,
-    IMessageHandler<TMessage, TResult> decorated)
-    : IMessageHandler<TMessage, TResult>
-    where TMessage : IMessage<TResult>
+public class UnitOfWorkDecorator<TMessage, TResult> : IMessageHandler<TMessage, TResult> where TMessage : IMessage<TResult>
 {
+    public UnitOfWorkDecorator(IUnitOfWork unitOfWork, IServiceProvider services, IMessageHandler<TMessage, TResult> decorated)
+    {
+        _unitOfWork = unitOfWork;
+        _services = services;
+        _decorated = decorated;
+    }
+
     public async Task<TResult> Handle(TMessage message)
     {
-        await unitOfWork.Begin();
+        var (dbContextKeyType, transactionMode) = message switch
+        {
+            IQuery<TResult>   => (typeof(AuthenticationDbContext.ReadOnly), IUnitOfWork.TransactionMode.None),
+            ICommand<TResult> => (typeof(AuthenticationDbContext.ReadWrite), IUnitOfWork.TransactionMode.WithReadCommitted),
+            _ => throw new BugException("Unhandled message type.")
+        };
+
+        await _unitOfWork.Begin((AuthenticationDbContext)_services.GetRequiredService(dbContextKeyType),
+            transactionMode);
 
         try
         {
-            var result = await decorated.Handle(message);
+            var result = await _decorated.Handle(message);
 
-            await unitOfWork.Commit();
+            await _unitOfWork.End(IUnitOfWork.Outcome.Success);
             
             return result;
         }
         catch
         {
-            await unitOfWork.Rollback();
+            await _unitOfWork.End(IUnitOfWork.Outcome.Failure);
             
             throw;
         }
     }
+
+    private readonly IUnitOfWork _unitOfWork;
+    
+    private readonly IServiceProvider _services;
+    
+    private readonly IMessageHandler<TMessage, TResult> _decorated;
 }

@@ -13,13 +13,20 @@ using Shadowchats.Authentication.Core.Domain.Aggregates;
 
 namespace Shadowchats.Authentication.Infrastructure.Persistence;
 
-public class AccountRepository(AuthenticationDbContext dbContext) : IAggregateRootRepository<Account>
+public class AccountRepository : IAggregateRootRepository<Account>
 {
+    public AccountRepository(IUnitOfWork unitOfWork)
+    {
+        _unitOfWork = unitOfWork;
+    }
+
     public Task<Account?> Find(Expression<Func<Account, bool>> predicate) =>
-        dbContext.Accounts.FirstOrDefaultAsync(predicate);
+        _unitOfWork.DbContext.Accounts.FirstOrDefaultAsync(predicate);
 
     public Task<List<Account>> FindAll(Expression<Func<Account, bool>> predicate) =>
-        dbContext.Accounts.Where(predicate).ToListAsync();
+        _unitOfWork.DbContext.Accounts.Where(predicate).ToListAsync();
 
-    public Task Add(Account aggregateRoot) => dbContext.Accounts.AddAsync(aggregateRoot).AsTask();
+    public Task Add(Account aggregateRoot) => _unitOfWork.DbContext.Accounts.AddAsync(aggregateRoot).AsTask();
+
+    private readonly IUnitOfWork _unitOfWork;
 }
