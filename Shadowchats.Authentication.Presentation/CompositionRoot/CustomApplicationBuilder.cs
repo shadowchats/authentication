@@ -1,4 +1,5 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using Microsoft.AspNetCore.Server.Kestrel.Core;
+using Microsoft.EntityFrameworkCore;
 using OpenTelemetry.Trace;
 using Serilog;
 using Shadowchats.Authentication.Infrastructure.Persistence;
@@ -13,6 +14,15 @@ public static class CustomApplicationBuilder
     public static WebApplication Build()
     {
         var builder = WebApplication.CreateBuilder();
+        
+        builder.WebHost.UseSetting("AllowedHosts", "*");
+        builder.WebHost.ConfigureKestrel(options =>
+        {
+            options.ListenAnyIP(5000, listenOptions =>
+            {
+                listenOptions.Protocols = HttpProtocols.Http1AndHttp2;
+            });
+        });
 
         builder.Services.AddGrpc(options => { options.Interceptors.Add<ExceptionHandlingGrpcInterceptor>(); });
         builder.Services
@@ -34,7 +44,7 @@ public static class CustomApplicationBuilder
         db.Database.OpenConnection();
 
         var lifetime = app.Services.GetRequiredService<IHostApplicationLifetime>();
-        lifetime.ApplicationStopped.Register(() => { Log.CloseAndFlush(); });
+        lifetime.ApplicationStopped.Register(Log.CloseAndFlush);
 
         app.UseSerilogRequestLogging();
 
