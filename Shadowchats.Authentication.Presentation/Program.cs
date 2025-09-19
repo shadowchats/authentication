@@ -6,6 +6,7 @@
 // (at your option) any later version. See the LICENSE file for details.
 // For full copyright and authorship information, see the COPYRIGHT file.
 
+using System.Globalization;
 using Shadowchats.Authentication.Presentation.CompositionRoot;
 
 namespace Shadowchats.Authentication.Presentation;
@@ -14,6 +15,9 @@ public static class Program
 {
     public static void Main()
     {
+        CultureInfo.DefaultThreadCurrentCulture = CultureInfo.InvariantCulture;
+        CultureInfo.DefaultThreadCurrentUICulture = CultureInfo.InvariantCulture;
+        
         var app = CustomApplicationBuilder.Build();
 
         app.Run();
