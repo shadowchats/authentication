@@ -2,6 +2,15 @@ name: Build & Push Docker Image
 
 on:
   workflow_dispatch:
+    inputs:
+      level:
+        description: 'Which version to bump (major/minor/patch)'
+        required: true
+        type: choice
+        options:
+          - patch
+          - minor
+          - major
 
 jobs:
   build-and-push:
@@ -42,12 +51,35 @@ jobs:
       - name: Increment version
         run: |
           OLD_VERSION=$(cat VERSION)
-          # Простейший патч-бамп
           IFS='.' read -r MAJ MIN PATCH <<< "$OLD_VERSION"
-          PATCH=$((PATCH+1))
-          echo "$MAJ.$MIN.$PATCH" > VERSION
+
+          # Обязательный input level, берем напрямую
+          LEVEL="${{ github.event.inputs.level }}"
+
+          case "$LEVEL" in
+            major)
+              MAJ=$((MAJ+1))
+              MIN=0
+              PATCH=0
+              ;;
+            minor)
+              MIN=$((MIN+1))
+              PATCH=0
+              ;;
+            patch)
+              PATCH=$((PATCH+1))
+              ;;
+            *)
+              echo "Unknown level '$LEVEL', exiting"
+              exit 1
+              ;;
+          esac
+
+          NEW_VERSION="$MAJ.$MIN.$PATCH"
+          echo "$NEW_VERSION" > VERSION
+
           git config --local user.email "ci@example.com"
           git config --local user.name "CI Bot"
           git add VERSION
-          git commit -m "Bump version to $MAJ.$MIN.$PATCH"
+          git commit -m "Bump version to $NEW_VERSION"
           git push
