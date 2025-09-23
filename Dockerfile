@@ -9,7 +9,7 @@
 # -----------------------------
 # Stage 1: Build
 # -----------------------------
-FROM mcr.microsoft.com/dotnet/sdk:8.0 AS build
+FROM mcr.microsoft.com/dotnet/sdk:9.0 AS build
 WORKDIR /src
 
 COPY Shadowchats.Authentication.Presentation/Shadowchats.Authentication.Presentation.csproj ./Presentation/
@@ -24,7 +24,7 @@ RUN dotnet publish ./Presentation/Shadowchats.Authentication.Presentation.csproj
 # -----------------------------
 # Stage 2: Runtime
 # -----------------------------
-FROM mcr.microsoft.com/dotnet/aspnet:8.0 AS runtime
+FROM mcr.microsoft.com/dotnet/aspnet:9.0 AS runtime
 WORKDIR /app
 
 COPY --from=build /app/publish .
