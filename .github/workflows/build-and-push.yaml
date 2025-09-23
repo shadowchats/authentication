@@ -14,7 +14,7 @@ on:
 
 jobs:
   build-and-push:
-    runs-on: [self-hosted, Linux, X64, local-minikube]
+    runs-on: self-hosted
 
     steps:
       - name: Checkout repo
