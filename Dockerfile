@@ -12,14 +12,20 @@
 FROM mcr.microsoft.com/dotnet/sdk:9.0 AS build
 WORKDIR /src
 
-COPY Shadowchats.Authentication.Presentation/Shadowchats.Authentication.Presentation.csproj ./Presentation/
-RUN dotnet restore ./Presentation/Shadowchats.Authentication.Presentation.csproj
+# Копируем файл решения и файлы проектов
+COPY Shadowchats.Authentication.sln ./
+COPY Shadowchats.Authentication.Core/Shadowchats.Authentication.Core.csproj ./Shadowchats.Authentication.Core/
+COPY Shadowchats.Authentication.Infrastructure/Shadowchats.Authentication.Infrastructure.csproj ./Shadowchats.Authentication.Infrastructure/
+COPY Shadowchats.Authentication.Presentation/Shadowchats.Authentication.Presentation.csproj ./Shadowchats.Authentication.Presentation/
 
-COPY Shadowchats.Authentication.Core ./Core
-COPY Shadowchats.Authentication.Infrastructure ./Infrastructure
-COPY Shadowchats.Authentication.Presentation ./Presentation
+# Восстановление зависимостей по solution
+RUN dotnet restore Shadowchats.Authentication.sln
 
-RUN dotnet publish ./Presentation/Shadowchats.Authentication.Presentation.csproj -c Release -o /app/publish
+# Копируем всё остальное
+COPY . .
+
+# Публикация конкретного проекта
+RUN dotnet publish Shadowchats.Authentication.Presentation/Shadowchats.Authentication.Presentation.csproj -c Release -o /app/publish
 
 # -----------------------------
 # Stage 2: Runtime
@@ -35,3 +41,4 @@ ENV DOTNET_SYSTEM_GLOBALIZATION_INVARIANT=true
 EXPOSE 5000
 
 ENTRYPOINT ["dotnet", "Shadowchats.Authentication.Presentation.dll"]
+
