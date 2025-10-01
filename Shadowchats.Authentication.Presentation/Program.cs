@@ -13,13 +13,14 @@ namespace Shadowchats.Authentication.Presentation;
 
 public static class Program
 {
-    public static void Main()
+    public static async Task Main(string[] args)
     {
         CultureInfo.DefaultThreadCurrentCulture = CultureInfo.InvariantCulture;
         CultureInfo.DefaultThreadCurrentUICulture = CultureInfo.InvariantCulture;
         
-        var app = CustomApplicationBuilder.Build();
+        var app = await CustomApplicationBuilder.Build(args);
 
-        app.Run();
+        if (app != null)
+            await app.RunAsync();
     }
 }

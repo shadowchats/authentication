@@ -39,7 +39,8 @@ public static class ServiceCollectionExtensions
     private static IServiceCollection AddPersistence(this IServiceCollection services, IConfiguration configuration) =>
         services
             .AddDbContext<AuthenticationDbContext.ReadWrite>(options =>
-                options.UseNpgsql(configuration.GetRequiredValue<string>("PostgresConnectionStrings:ReadWrite")))
+                options.UseNpgsql(configuration.GetRequiredValue<string>("PostgresConnectionStrings:ReadWrite"),
+                    x => x.MigrationsAssembly("Shadowchats.Authentication.Infrastructure")))
             .AddDbContext<AuthenticationDbContext.ReadOnly>(options =>
                 options.UseNpgsql(configuration.GetRequiredValue<string>("PostgresConnectionStrings:ReadOnly")))
             .AddScoped<IUnitOfWork, UnitOfWork>()

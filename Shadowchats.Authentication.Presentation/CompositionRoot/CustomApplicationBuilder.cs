@@ -6,8 +6,10 @@
 // (at your option) any later version. See the LICENSE file for details.
 // For full copyright and authorship information, see the COPYRIGHT file.
 
+using Microsoft.AspNetCore.Diagnostics.HealthChecks;
 using Microsoft.AspNetCore.Server.Kestrel.Core;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Diagnostics.HealthChecks;
 using OpenTelemetry.Trace;
 using Serilog;
 using Shadowchats.Authentication.Infrastructure.Persistence;
@@ -17,9 +19,9 @@ using Shadowchats.Authentication.Presentation.GrpcServices;
 
 namespace Shadowchats.Authentication.Presentation.CompositionRoot;
 
-public static class CustomApplicationBuilder
+public class CustomApplicationBuilder
 {
-    public static WebApplication Build()
+    public static async Task<WebApplication?> Build(string[] args)
     {
         var builder = WebApplication.CreateBuilder();
         
@@ -44,12 +46,32 @@ public static class CustomApplicationBuilder
             });
 
         builder.Host.UseSerilog();
+
+        builder.Services.AddHealthChecks()
+            .AddCheck("health", () => HealthCheckResult.Healthy())
+            .AddCheck<ReadyHealthCheck>("ready");
         
         var app = builder.Build();
-
-        using var scope = app.Services.CreateScope();
-        var db = scope.ServiceProvider.GetRequiredService<AuthenticationDbContext>();
-        db.Database.OpenConnection();
+        
+        if (args.Contains("migrate"))
+        {
+            using var scope = app.Services.CreateScope();
+            var db = scope.ServiceProvider.GetRequiredService<AuthenticationDbContext.ReadWrite>();
+            var logger = scope.ServiceProvider.GetRequiredService<ILogger<CustomApplicationBuilder>>();
+            await WaitForDatabaseAsync(db, logger);
+            await db.Database.MigrateAsync();
+            logger.LogInformation("Migrations applied successfully.");
+            return null;
+        }
+        
+        app.MapHealthChecks("/health", new HealthCheckOptions
+        {
+            Predicate = check => check.Name == "health"
+        });
+        app.MapHealthChecks("/ready", new HealthCheckOptions
+        {
+            Predicate = check => check.Name == "ready"
+        });
 
         var lifetime = app.Services.GetRequiredService<IHostApplicationLifetime>();
         lifetime.ApplicationStopped.Register(Log.CloseAndFlush);
@@ -59,5 +81,26 @@ public static class CustomApplicationBuilder
         app.MapGrpcService<AuthenticationGrpcService>();
 
         return app;
+    }
+    
+    private static async Task WaitForDatabaseAsync(AuthenticationDbContext db, ILogger<CustomApplicationBuilder> logger)
+    {
+        const int maxRetries = 10;
+        var delay = TimeSpan.FromSeconds(5);
+        for (var i = 0; i < maxRetries; i++)
+        {
+            try
+            {
+                await db.Database.OpenConnectionAsync();
+                await db.Database.CloseConnectionAsync();
+                return;
+            }
+            catch
+            {
+                logger.LogCritical("Database not ready, retry {I}/{MaxRetries}", i + 1, maxRetries);
+                await Task.Delay(delay);
+            }
+        }
+        throw new Exception("Database is unreachable after multiple retries.");
     }
 }
