@@ -20,6 +20,7 @@ public class ReadyHealthCheck : IHealthCheck
         HealthCheckContext context,
         CancellationToken cancellationToken = default)
     {
+        // Checking relational databases
         try
         {
             await _dbRw.Accounts.AnyAsync(cancellationToken);
@@ -28,10 +29,6 @@ public class ReadyHealthCheck : IHealthCheck
             // Проверяем RO
             await _dbRo.Accounts.AnyAsync(cancellationToken);
             _logger.LogInformation("ReadOnly database replica is reachable and operational.");
-
-            return HealthCheckResult.Healthy(
-                "All critical database dependencies (RW and RO) are reachable and operational."
-            );
         }
         catch (Exception ex)
         {
@@ -41,6 +38,10 @@ public class ReadyHealthCheck : IHealthCheck
                 ex
             );
         }
+
+        return HealthCheckResult.Healthy(
+            "All critical dependencies are reachable and operational."
+        );
     }
     
     private readonly AuthenticationDbContext.ReadWrite _dbRw;
