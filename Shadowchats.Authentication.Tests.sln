@@ -1,0 +1,34 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Shadowchats.Authentication.Infrastructure.Tests", "Shadowchats.Authentication.Infrastructure.Tests\Shadowchats.Authentication.Infrastructure.Tests.csproj", "{01B2A24C-ED25-4D83-9EC8-884C0780889E}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Shadowchats.Authentication.Core.Tests", "Shadowchats.Authentication.Core.Tests\Shadowchats.Authentication.Core.Tests.csproj", "{9FE19614-EBA4-4E06-9E12-3AF472A9510A}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Shadowchats.Authentication.Core", "Shadowchats.Authentication.Core\Shadowchats.Authentication.Core.csproj", "{44D7C7C8-D039-4405-AE9C-C901C7BD9FA3}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Shadowchats.Authentication.Infrastructure", "Shadowchats.Authentication.Infrastructure\Shadowchats.Authentication.Infrastructure.csproj", "{D6D34F98-4039-4DCF-96A1-757496FF122F}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{01B2A24C-ED25-4D83-9EC8-884C0780889E}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{01B2A24C-ED25-4D83-9EC8-884C0780889E}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{01B2A24C-ED25-4D83-9EC8-884C0780889E}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{01B2A24C-ED25-4D83-9EC8-884C0780889E}.Release|Any CPU.Build.0 = Release|Any CPU
+		{9FE19614-EBA4-4E06-9E12-3AF472A9510A}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{9FE19614-EBA4-4E06-9E12-3AF472A9510A}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{9FE19614-EBA4-4E06-9E12-3AF472A9510A}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{9FE19614-EBA4-4E06-9E12-3AF472A9510A}.Release|Any CPU.Build.0 = Release|Any CPU
+		{44D7C7C8-D039-4405-AE9C-C901C7BD9FA3}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{44D7C7C8-D039-4405-AE9C-C901C7BD9FA3}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{44D7C7C8-D039-4405-AE9C-C901C7BD9FA3}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{44D7C7C8-D039-4405-AE9C-C901C7BD9FA3}.Release|Any CPU.Build.0 = Release|Any CPU
+		{D6D34F98-4039-4DCF-96A1-757496FF122F}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{D6D34F98-4039-4DCF-96A1-757496FF122F}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{D6D34F98-4039-4DCF-96A1-757496FF122F}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{D6D34F98-4039-4DCF-96A1-757496FF122F}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+EndGlobal
