@@ -58,7 +58,7 @@ jobs:
           branch: "release/${{ steps.bump_version.outputs.new }}"
           title: "Release ${{ steps.bump_version.outputs.new }}"
           body: "Automated PR for version bump to ${{ steps.bump_version.outputs.new }}"
-          base: main
+          base: master
 
       - name: Log in to DockerHub
         uses: docker/login-action@v2
