@@ -15,7 +15,7 @@ public class AuthenticationDbContextFactory : IDesignTimeDbContextFactory<Authen
 {
     public AuthenticationDbContext.ReadWrite CreateDbContext(string[] args)
     {
-        var optionsBuilder = new DbContextOptionsBuilder<AuthenticationDbContext>();
+        var optionsBuilder = new DbContextOptionsBuilder<AuthenticationDbContext.ReadWrite>();
         
         optionsBuilder.UseNpgsql(args[0]);
 

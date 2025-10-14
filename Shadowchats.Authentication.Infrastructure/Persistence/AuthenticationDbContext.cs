@@ -16,15 +16,15 @@ public abstract class AuthenticationDbContext : DbContext
 {
     public class ReadWrite : AuthenticationDbContext
     {
-        public ReadWrite(DbContextOptions<AuthenticationDbContext> options) : base(options) { }
+        public ReadWrite(DbContextOptions<ReadWrite> options) : base(options) { }
     }
 
     public class ReadOnly : AuthenticationDbContext
     {
-        public ReadOnly(DbContextOptions<AuthenticationDbContext> options) : base(options) { }
+        public ReadOnly(DbContextOptions<ReadOnly> options) : base(options) { }
     }
 
-    public AuthenticationDbContext(DbContextOptions<AuthenticationDbContext> options) : base(options) { }
+    public AuthenticationDbContext(DbContextOptions options) : base(options) { }
     
     private class AccountEntityTypeConfiguration : IEntityTypeConfiguration<Account>
     {
