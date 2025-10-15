@@ -16,6 +16,7 @@ using Shadowchats.Authentication.Infrastructure.Bus;
 using Shadowchats.Authentication.Infrastructure.Bus.Decorators;
 using Shadowchats.Authentication.Infrastructure.Identity;
 using Shadowchats.Authentication.Infrastructure.Persistence;
+using Shadowchats.Authentication.Infrastructure.Persistence.AuthenticationDbContext;
 using Shadowchats.Authentication.Infrastructure.Scheduling;
 using Shadowchats.Authentication.Infrastructure.System;
 
@@ -38,10 +39,10 @@ public static class ServiceCollectionExtensions
 
     private static IServiceCollection AddPersistence(this IServiceCollection services, IConfiguration configuration) =>
         services
-            .AddDbContext<AuthenticationDbContext.ReadWrite>(options =>
+            .AddDbContext<ReadWrite>(options =>
                 options.UseNpgsql(configuration.GetRequiredValue<string>("PostgresConnectionStrings:ReadWrite"),
                     x => x.MigrationsAssembly("Shadowchats.Authentication.Infrastructure")))
-            .AddDbContext<AuthenticationDbContext.ReadOnly>(options =>
+            .AddDbContext<ReadOnly>(options =>
                 options.UseNpgsql(configuration.GetRequiredValue<string>("PostgresConnectionStrings:ReadOnly")))
             .AddScoped<IUnitOfWork, UnitOfWork>()
             .AddScoped<IPersistenceContext, PersistenceContext>()

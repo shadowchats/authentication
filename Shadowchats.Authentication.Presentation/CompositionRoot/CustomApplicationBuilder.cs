@@ -12,7 +12,7 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Diagnostics.HealthChecks;
 using OpenTelemetry.Trace;
 using Serilog;
-using Shadowchats.Authentication.Infrastructure.Persistence;
+using Shadowchats.Authentication.Infrastructure.Persistence.AuthenticationDbContext;
 using Shadowchats.Authentication.Presentation.CompositionRoot.Extensions;
 using Shadowchats.Authentication.Presentation.GrpcInterceptors;
 using Shadowchats.Authentication.Presentation.GrpcServices;
@@ -56,7 +56,7 @@ public class CustomApplicationBuilder
         if (args.Contains("migrate"))
         {
             using var scope = app.Services.CreateScope();
-            var db = scope.ServiceProvider.GetRequiredService<AuthenticationDbContext.ReadWrite>();
+            var db = scope.ServiceProvider.GetRequiredService<ReadWrite>();
             var logger = scope.ServiceProvider.GetRequiredService<ILogger<CustomApplicationBuilder>>();
             await WaitForDatabaseAsync(db, logger);
             await db.Database.MigrateAsync();
@@ -83,7 +83,7 @@ public class CustomApplicationBuilder
         return app;
     }
     
-    private static async Task WaitForDatabaseAsync(AuthenticationDbContext db, ILogger<CustomApplicationBuilder> logger)
+    private static async Task WaitForDatabaseAsync(ReadWrite db, ILogger<CustomApplicationBuilder> logger)
     {
         const int maxRetries = 10;
         var delay = TimeSpan.FromSeconds(5);

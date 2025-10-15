@@ -15,6 +15,8 @@ using Shadowchats.Authentication.Core.Application.UseCases.Logout;
 using Shadowchats.Authentication.Core.Application.UseCases.LogoutAll;
 using Shadowchats.Authentication.Core.Application.UseCases.RegisterAccount;
 using Shadowchats.Authentication.Presentation.Grpc;
+using Command = Shadowchats.Authentication.Core.Application.UseCases.Login.Command;
+using Result = Shadowchats.Authentication.Core.Application.UseCases.Login.Result;
 
 namespace Shadowchats.Authentication.Presentation.GrpcServices;
 
@@ -22,13 +24,13 @@ public class AuthenticationGrpcService(IBus bus) : AuthenticationService.Authent
 {
     public override async Task<RegisterAccountResponse> RegisterAccount(RegisterAccountRequest request, ServerCallContext context)
     {
-        var command = new RegisterAccountCommand
+        var command = new Core.Application.UseCases.RegisterAccount.Command
         {
             Login = request.Login,
             Password = request.Password
         };
 
-        await bus.Execute<RegisterAccountCommand, NoResult>(command);
+        await bus.Execute<Core.Application.UseCases.RegisterAccount.Command, NoResult>(command);
 
         return new RegisterAccountResponse
         {
@@ -38,13 +40,13 @@ public class AuthenticationGrpcService(IBus bus) : AuthenticationService.Authent
 
     public override async Task<LoginResponse> Login(LoginRequest request, ServerCallContext context)
     {
-        var command = new LoginCommand
+        var command = new Command
         {
             Login = request.Login,
             Password = request.Password
         };
 
-        var result = await bus.Execute<LoginCommand, LoginResult>(command);
+        var result = await bus.Execute<Command, Result>(command);
 
         return new LoginResponse
         {
@@ -55,12 +57,12 @@ public class AuthenticationGrpcService(IBus bus) : AuthenticationService.Authent
 
     public override async Task<GenerateAccessTokenResponse> GenerateAccessToken(GenerateAccessTokenRequest request, ServerCallContext context)
     {
-        var command = new GenerateAccessTokenCommand
+        var command = new Core.Application.UseCases.GenerateAccessToken.Command
         {
             RefreshToken = request.RefreshToken
         };
 
-        var result = await bus.Execute<GenerateAccessTokenCommand, GenerateAccessTokenResult>(command);
+        var result = await bus.Execute<Core.Application.UseCases.GenerateAccessToken.Command, Core.Application.UseCases.GenerateAccessToken.Result>(command);
 
         return new GenerateAccessTokenResponse
         {
@@ -70,12 +72,12 @@ public class AuthenticationGrpcService(IBus bus) : AuthenticationService.Authent
 
     public override async Task<LogoutResponse> Logout(LogoutRequest request, ServerCallContext context)
     {
-        var command = new LogoutCommand
+        var command = new Core.Application.UseCases.Logout.Command
         {
             RefreshToken = request.RefreshToken
         };
 
-        await bus.Execute<LogoutCommand, NoResult>(command);
+        await bus.Execute<Core.Application.UseCases.Logout.Command, NoResult>(command);
 
         return new LogoutResponse
         {
@@ -86,13 +88,13 @@ public class AuthenticationGrpcService(IBus bus) : AuthenticationService.Authent
 
     public override async Task<LogoutAllResponse> LogoutAll(LogoutAllRequest request, ServerCallContext context)
     {
-        var command = new LogoutAllCommand
+        var command = new Core.Application.UseCases.LogoutAll.Command
         {
             Login = request.Login,
             Password = request.Password
         };
 
-        await bus.Execute<LogoutAllCommand, NoResult>(command);
+        await bus.Execute<Core.Application.UseCases.LogoutAll.Command, NoResult>(command);
 
         return new LogoutAllResponse
         {

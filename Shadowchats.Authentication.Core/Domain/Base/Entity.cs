@@ -7,17 +7,23 @@
 // For full copyright and authorship information, see the COPYRIGHT file.
 
 using System.ComponentModel;
+using JetBrains.Annotations;
 using Shadowchats.Authentication.Core.Domain.Exceptions;
 
 namespace Shadowchats.Authentication.Core.Domain.Base;
 
 public abstract class Entity<TEntity> where TEntity : Entity<TEntity>
 {
-    protected Entity(Guid guid)
+    [UsedImplicitly]
+    protected Entity()
     {
-        Guid = guid;
         _domainEvents = [];
         DomainEvents = _domainEvents.AsReadOnly();
+    }
+    
+    protected Entity(Guid guid) : this()
+    {
+        Guid = guid;
     }
 
     public void AddDomainEvent(IDomainEvent domainEventItem) => _domainEvents.Add(domainEventItem);
@@ -28,8 +34,9 @@ public abstract class Entity<TEntity> where TEntity : Entity<TEntity>
 
     public sealed override bool Equals(object? obj) => obj is TEntity entity && Equals(entity);
 
-    public bool Equals(TEntity other) => Guid == other.Guid;
-
+    public bool Equals(TEntity other) => Guid == other.Guid; 
+    
+    // ReSharper disable once NonReadonlyMemberInGetHashCode
     public sealed override int GetHashCode() => Guid.GetHashCode();
 
     [Obsolete("Don't use == operator, use Equals or ReferenceEquals methods instead", true)]
@@ -40,7 +47,7 @@ public abstract class Entity<TEntity> where TEntity : Entity<TEntity>
     [EditorBrowsable(EditorBrowsableState.Never)]
     public static bool operator !=(Entity<TEntity> _, Entity<TEntity> __) => throw new BugException("!= operator is not allowed");
 
-    public Guid Guid { get; }
+    public Guid Guid { get; private set; }
     
     public IReadOnlyList<IDomainEvent> DomainEvents { get; }
 

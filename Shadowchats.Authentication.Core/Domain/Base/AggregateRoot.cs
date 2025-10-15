@@ -6,10 +6,15 @@
 // (at your option) any later version. See the LICENSE file for details.
 // For full copyright and authorship information, see the COPYRIGHT file.
 
+using JetBrains.Annotations;
+
 namespace Shadowchats.Authentication.Core.Domain.Base;
 
 public abstract class AggregateRoot<TAggregateRoot> : Entity<TAggregateRoot>
     where TAggregateRoot : AggregateRoot<TAggregateRoot>
 {
+    [UsedImplicitly]
+    protected AggregateRoot() { }
+    
     protected AggregateRoot(Guid guid) : base(guid) { }
 }

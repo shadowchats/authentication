@@ -6,6 +6,7 @@
 // (at your option) any later version. See the LICENSE file for details.
 // For full copyright and authorship information, see the COPYRIGHT file.
 
+using JetBrains.Annotations;
 using Shadowchats.Authentication.Core.Domain.Base;
 using Shadowchats.Authentication.Core.Domain.Exceptions;
 using Shadowchats.Authentication.Core.Domain.Interfaces;
@@ -17,6 +18,11 @@ public class Session : AggregateRoot<Session>
     public static Session Create(IGuidGenerator guidGenerator, IDateTimeProvider dateTimeProvider, IRefreshTokenGenerator refreshTokenGenerator,
         Guid accountId) => new(guidGenerator.Generate(), accountId, dateTimeProvider.UtcNow.AddDays(LifetimeInDays),
         refreshTokenGenerator.Generate(), true);
+    
+#pragma warning disable CS8618 // Non-nullable field must contain a non-null value when exiting constructor. Consider adding the 'required' modifier or declaring as nullable.
+    [UsedImplicitly]
+    private Session() { } 
+#pragma warning restore CS8618 // Non-nullable field must contain a non-null value when exiting constructor. Consider adding the 'required' modifier or declaring as nullable.
 
     private Session(Guid guid, Guid accountId, DateTime expiresAt, string refreshToken, bool isActive) : base(guid)
     {
@@ -42,9 +48,9 @@ public class Session : AggregateRoot<Session>
         return accessTokenIssuer.Issue(AccountId);
     }
     
-    public Guid AccountId { get; }
-    public DateTime ExpiresAt { get; }
-    public string RefreshToken { get; }
+    public Guid AccountId { get; private set; }
+    public DateTime ExpiresAt { get; private set; }
+    public string RefreshToken { get; private set; }
     public bool IsActive { get; private set; }
 
     private const int LifetimeInDays = 30;

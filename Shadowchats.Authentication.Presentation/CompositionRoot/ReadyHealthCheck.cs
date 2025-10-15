@@ -1,14 +1,14 @@
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Diagnostics.HealthChecks;
-using Shadowchats.Authentication.Infrastructure.Persistence;
+using Shadowchats.Authentication.Infrastructure.Persistence.AuthenticationDbContext;
 
 namespace Shadowchats.Authentication.Presentation.CompositionRoot;
 
 public class ReadyHealthCheck : IHealthCheck
 {
     public ReadyHealthCheck(
-        AuthenticationDbContext.ReadWrite dbRw,
-        AuthenticationDbContext.ReadOnly dbRo,
+        ReadWrite dbRw,
+        ReadOnly dbRo,
         ILogger<ReadyHealthCheck> logger)
     {
         _dbRw = dbRw;
@@ -44,7 +44,7 @@ public class ReadyHealthCheck : IHealthCheck
         );
     }
     
-    private readonly AuthenticationDbContext.ReadWrite _dbRw;
-    private readonly AuthenticationDbContext.ReadOnly _dbRo;
+    private readonly ReadWrite _dbRw;
+    private readonly ReadOnly _dbRo;
     private readonly ILogger<ReadyHealthCheck> _logger;
 }

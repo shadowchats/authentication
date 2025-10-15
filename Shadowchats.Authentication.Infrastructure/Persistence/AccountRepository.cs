@@ -10,6 +10,7 @@ using System.Linq.Expressions;
 using Microsoft.EntityFrameworkCore;
 using Shadowchats.Authentication.Core.Application.Interfaces;
 using Shadowchats.Authentication.Core.Domain.Aggregates;
+using Shadowchats.Authentication.Infrastructure.Persistence.AuthenticationDbContext;
 
 namespace Shadowchats.Authentication.Infrastructure.Persistence;
 

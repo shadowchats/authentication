@@ -11,6 +11,7 @@ using Shadowchats.Authentication.Core.Application.Base;
 using Shadowchats.Authentication.Core.Application.Interfaces;
 using Shadowchats.Authentication.Core.Domain.Exceptions;
 using Shadowchats.Authentication.Infrastructure.Persistence;
+using Shadowchats.Authentication.Infrastructure.Persistence.AuthenticationDbContext;
 
 namespace Shadowchats.Authentication.Infrastructure.Bus.Decorators;
 
@@ -27,12 +28,12 @@ public class UnitOfWorkDecorator<TMessage, TResult> : IMessageHandler<TMessage, 
     {
         var (dbContextKeyType, transactionMode) = message switch
         {
-            IQuery<TResult>   => (typeof(AuthenticationDbContext.ReadOnly), IUnitOfWork.TransactionMode.None),
-            ICommand<TResult> => (typeof(AuthenticationDbContext.ReadWrite), IUnitOfWork.TransactionMode.WithReadCommitted),
+            IQuery<TResult>   => (typeof(ReadOnly), IUnitOfWork.TransactionMode.None),
+            ICommand<TResult> => (typeof(ReadWrite), IUnitOfWork.TransactionMode.WithReadCommitted),
             _ => throw new BugException("Unhandled message type.")
         };
 
-        await _unitOfWork.Begin((AuthenticationDbContext)_services.GetRequiredService(dbContextKeyType),
+        await _unitOfWork.Begin((IAuthenticationDbContext)_services.GetRequiredService(dbContextKeyType),
             transactionMode);
 
         try

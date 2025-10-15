@@ -6,6 +6,7 @@
 // (at your option) any later version. See the LICENSE file for details.
 // For full copyright and authorship information, see the COPYRIGHT file.
 
+using JetBrains.Annotations;
 using Shadowchats.Authentication.Core.Domain.Base;
 using Shadowchats.Authentication.Core.Domain.Exceptions;
 using Shadowchats.Authentication.Core.Domain.Interfaces;
@@ -80,6 +81,11 @@ public class Credentials : ValueObject<Credentials>
     }
     
     private static readonly HashSet<char> SpecialCharacters = new("!@#$%^&*()_+-=[]{}|;':\",./\\<>?");
+    
+#pragma warning disable CS8618 // Non-nullable field must contain a non-null value when exiting constructor. Consider adding the 'required' modifier or declaring as nullable.
+    [UsedImplicitly]
+    private Credentials() { } 
+#pragma warning restore CS8618 // Non-nullable field must contain a non-null value when exiting constructor. Consider adding the 'required' modifier or declaring as nullable.
 
     private Credentials(string login, string passwordHash)
     {
@@ -95,6 +101,6 @@ public class Credentials : ValueObject<Credentials>
         yield return PasswordHash;
     }
     
-    public string Login { get; }
-    public string PasswordHash { get; }
+    public string Login { get; private set; }
+    public string PasswordHash { get; private set; }
 }

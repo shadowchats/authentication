@@ -3,6 +3,7 @@ using Npgsql;
 using Shadowchats.Authentication.Core.Application.Exceptions;
 using Shadowchats.Authentication.Core.Application.Interfaces;
 using Shadowchats.Authentication.Core.Domain.Aggregates;
+using Shadowchats.Authentication.Infrastructure.Persistence.AuthenticationDbContext;
 
 namespace Shadowchats.Authentication.Infrastructure.Persistence;
 
@@ -17,7 +18,7 @@ public class PersistenceContext : IPersistenceContext
     {
         try
         {
-            await _unitOfWork.DbContext.SaveChangesAsync();
+            await _unitOfWork.DbContext.SaveChanges();
         }
         catch (DbUpdateException ex) when (ex.InnerException is PostgresException
                                            {

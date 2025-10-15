@@ -6,7 +6,7 @@
 // (at your option) any later version. See the LICENSE file for details.
 // For full copyright and authorship information, see the COPYRIGHT file.
 
-namespace Shadowchats.Authentication.Infrastructure.Persistence;
+namespace Shadowchats.Authentication.Infrastructure.Persistence.AuthenticationDbContext;
 
 public interface IUnitOfWork
 {
@@ -14,8 +14,8 @@ public interface IUnitOfWork
     
     public enum TransactionMode { None, WithReadCommitted }
     
-    AuthenticationDbContext DbContext { get; }
-    
-    Task Begin(AuthenticationDbContext dbContext, TransactionMode transactionMode);
+    Task Begin(IAuthenticationDbContext dbContext, TransactionMode transactionMode);
     Task End(Outcome outcome);
+    
+    IAuthenticationDbContext DbContext { get; }
 }

@@ -8,12 +8,13 @@
 
 using Microsoft.EntityFrameworkCore.Storage;
 using Shadowchats.Authentication.Core.Domain.Exceptions;
+using Shadowchats.Authentication.Infrastructure.Persistence.AuthenticationDbContext;
 
 namespace Shadowchats.Authentication.Infrastructure.Persistence;
 
 public class UnitOfWork : IUnitOfWork
 {
-    public async Task Begin(AuthenticationDbContext dbContext, IUnitOfWork.TransactionMode transactionMode)
+    public async Task Begin(IAuthenticationDbContext dbContext, IUnitOfWork.TransactionMode transactionMode)
     {
         if (_dbContext is not null)
             throw new BugException("Is already begun.");
@@ -23,7 +24,7 @@ public class UnitOfWork : IUnitOfWork
         _transaction = transactionMode switch
         {
             IUnitOfWork.TransactionMode.None => null,
-            IUnitOfWork.TransactionMode.WithReadCommitted => await _dbContext.Database.BeginTransactionAsync(),
+            IUnitOfWork.TransactionMode.WithReadCommitted => await _dbContext.BeginTransaction(),
             _ => throw new BugException("Transaction mode is not supported.")
         };
     }
@@ -60,10 +61,10 @@ public class UnitOfWork : IUnitOfWork
         }
     }
 
-    public AuthenticationDbContext DbContext =>
+    public IAuthenticationDbContext DbContext =>
         _dbContext ?? throw new BugException("Is not yet begun or is already ended.");
 
-    private AuthenticationDbContext? _dbContext;
+    private IAuthenticationDbContext? _dbContext;
 
     private IDbContextTransaction? _transaction;
 }
