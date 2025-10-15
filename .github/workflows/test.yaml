@@ -51,8 +51,10 @@ jobs:
           git commit --amend --reset-author --no-edit || true
           git remote set-url origin https://${{ secrets.CI_TOKEN }}@github.com/${GITHUB_REPOSITORY}.git
 
+          git stash push -m "pre-rebase"
           git fetch origin
           git rebase origin/master
+          git stash pop || true
           
           git add VERSION
           git commit -m "Release ${{ steps.bump_version.outputs.new }}"
