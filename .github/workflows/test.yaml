@@ -1,0 +1,52 @@
+name: Build & Push Docker Image
+
+on:
+  workflow_dispatch:
+    inputs:
+      level:
+        description: 'Which version to bump (major/minor/patch)'
+        required: true
+        type: choice
+        options:
+          - patch
+          - minor
+          - major
+
+jobs:
+  build-and-push:
+    runs-on: [self-hosted, Linux, X64, local-minikube]
+
+    steps:
+      - name: Checkout repo
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Read current VERSION
+        id: get_version
+        run: |
+          CURRENT_VERSION=$(cat VERSION)
+          echo "current=$CURRENT_VERSION" >> $GITHUB_OUTPUT
+          echo "service=$(basename $GITHUB_REPOSITORY)" >> $GITHUB_OUTPUT
+
+      - name: Calculate new VERSION
+        id: bump_version
+        run: |
+          IFS='.' read -r MAJ MIN PATCH <<< "${{ steps.get_version.outputs.current }}"
+          LEVEL="${{ github.event.inputs.level }}"
+          case "$LEVEL" in
+            major) MAJ=$((MAJ+1)); MIN=0; PATCH=0 ;;
+            minor) MIN=$((MIN+1)); PATCH=0 ;;
+            patch) PATCH=$((PATCH+1)) ;;
+          esac
+          NEW_VERSION="$MAJ.$MIN.$PATCH"
+          echo "new=$NEW_VERSION" >> $GITHUB_OUTPUT
+
+      - name: Update VERSION file
+        run: |
+          echo "${{ steps.bump_version.outputs.new }}" > VERSION
+          git config --local user.email "lenya.dorovskoy@mail.ru"
+          git config --local user.name "0ne290"
+          git add VERSION
+          git commit -m "Release ${{ steps.bump_version.outputs.new }}"
+          git push https://x-access-token:${{ secrets.CI_TOKEN }}@github.com/${GITHUB_REPOSITORY}.git HEAD:master
