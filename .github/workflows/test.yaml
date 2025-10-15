@@ -47,6 +47,7 @@ jobs:
           echo "${{ steps.bump_version.outputs.new }}" > VERSION
           git config --local user.email "lenya.dorovskoy@mail.ru"
           git config --local user.name "0ne290"
+          git remote set-url origin https://${{ secrets.CI_TOKEN }}@github.com/${GITHUB_REPOSITORY}.git
           git add VERSION
           git commit -m "Release ${{ steps.bump_version.outputs.new }}"
-          git push https://x-access-token:${{ secrets.CI_TOKEN }}@github.com/${GITHUB_REPOSITORY}.git HEAD:master
+          git push origin HEAD:master
