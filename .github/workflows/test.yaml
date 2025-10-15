@@ -50,6 +50,10 @@ jobs:
           git config user.signingkey ""
           git commit --amend --reset-author --no-edit || true
           git remote set-url origin https://${{ secrets.CI_TOKEN }}@github.com/${GITHUB_REPOSITORY}.git
+
+          git fetch origin
+          git rebase origin/master
+          
           git add VERSION
           git commit -m "Release ${{ steps.bump_version.outputs.new }}"
           git push origin HEAD:master
