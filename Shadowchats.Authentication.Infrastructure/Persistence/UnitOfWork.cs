@@ -8,7 +8,7 @@
 
 using Microsoft.EntityFrameworkCore.Storage;
 using Shadowchats.Authentication.Core.Domain.Exceptions;
-using Shadowchats.Authentication.Infrastructure.Persistence.AuthenticationDbContext;
+using Shadowchats.Authentication.Infrastructure.Persistence.Interfaces;
 
 namespace Shadowchats.Authentication.Infrastructure.Persistence;
 

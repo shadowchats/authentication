@@ -3,7 +3,7 @@ using Npgsql;
 using Shadowchats.Authentication.Core.Application.Exceptions;
 using Shadowchats.Authentication.Core.Application.Interfaces;
 using Shadowchats.Authentication.Core.Domain.Aggregates;
-using Shadowchats.Authentication.Infrastructure.Persistence.AuthenticationDbContext;
+using Shadowchats.Authentication.Infrastructure.Persistence.Interfaces;
 
 namespace Shadowchats.Authentication.Infrastructure.Persistence;
 

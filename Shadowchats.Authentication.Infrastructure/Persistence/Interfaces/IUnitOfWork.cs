@@ -6,7 +6,7 @@
 // (at your option) any later version. See the LICENSE file for details.
 // For full copyright and authorship information, see the COPYRIGHT file.
 
-namespace Shadowchats.Authentication.Infrastructure.Persistence.AuthenticationDbContext;
+namespace Shadowchats.Authentication.Infrastructure.Persistence.Interfaces;
 
 public interface IUnitOfWork
 {

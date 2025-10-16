@@ -10,8 +10,8 @@ using Microsoft.Extensions.DependencyInjection;
 using Shadowchats.Authentication.Core.Application.Base;
 using Shadowchats.Authentication.Core.Application.Interfaces;
 using Shadowchats.Authentication.Core.Domain.Exceptions;
-using Shadowchats.Authentication.Infrastructure.Persistence;
 using Shadowchats.Authentication.Infrastructure.Persistence.AuthenticationDbContext;
+using Shadowchats.Authentication.Infrastructure.Persistence.Interfaces;
 
 namespace Shadowchats.Authentication.Infrastructure.Bus.Decorators;
 
@@ -28,8 +28,8 @@ public class UnitOfWorkDecorator<TMessage, TResult> : IMessageHandler<TMessage, 
     {
         var (dbContextKeyType, transactionMode) = message switch
         {
-            IQuery<TResult>   => (typeof(ReadOnly), IUnitOfWork.TransactionMode.None),
-            ICommand<TResult> => (typeof(ReadWrite), IUnitOfWork.TransactionMode.WithReadCommitted),
+            IQuery<TResult>   => (typeof(AuthenticationDbContextReadOnly), IUnitOfWork.TransactionMode.None),
+            ICommand<TResult> => (typeof(AuthenticationDbContextReadWrite), IUnitOfWork.TransactionMode.WithReadCommitted),
             _ => throw new BugException("Unhandled message type.")
         };
 

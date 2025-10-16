@@ -10,9 +10,9 @@ using System.Linq.Expressions;
 using Microsoft.EntityFrameworkCore;
 using Shadowchats.Authentication.Core.Application.Interfaces;
 using Shadowchats.Authentication.Core.Domain.Aggregates;
-using Shadowchats.Authentication.Infrastructure.Persistence.AuthenticationDbContext;
+using Shadowchats.Authentication.Infrastructure.Persistence.Interfaces;
 
-namespace Shadowchats.Authentication.Infrastructure.Persistence;
+namespace Shadowchats.Authentication.Infrastructure.Persistence.Repositories;
 
 public class SessionRepository : IAggregateRootRepository<Session>
 {

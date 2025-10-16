@@ -2,7 +2,7 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Storage;
 using Shadowchats.Authentication.Core.Domain.Aggregates;
 
-namespace Shadowchats.Authentication.Infrastructure.Persistence;
+namespace Shadowchats.Authentication.Infrastructure.Persistence.Interfaces;
 
 public interface IAuthenticationDbContext
 {

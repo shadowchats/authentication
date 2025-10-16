@@ -56,7 +56,7 @@ public class CustomApplicationBuilder
         if (args.Contains("migrate"))
         {
             using var scope = app.Services.CreateScope();
-            var db = scope.ServiceProvider.GetRequiredService<ReadWrite>();
+            var db = scope.ServiceProvider.GetRequiredService<AuthenticationDbContextReadWrite>();
             var logger = scope.ServiceProvider.GetRequiredService<ILogger<CustomApplicationBuilder>>();
             await WaitForDatabaseAsync(db, logger);
             await db.Database.MigrateAsync();
@@ -83,7 +83,7 @@ public class CustomApplicationBuilder
         return app;
     }
     
-    private static async Task WaitForDatabaseAsync(ReadWrite db, ILogger<CustomApplicationBuilder> logger)
+    private static async Task WaitForDatabaseAsync(AuthenticationDbContextReadWrite db, ILogger<CustomApplicationBuilder> logger)
     {
         const int maxRetries = 10;
         var delay = TimeSpan.FromSeconds(5);

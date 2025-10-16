@@ -7,8 +7,8 @@ namespace Shadowchats.Authentication.Presentation.CompositionRoot;
 public class ReadyHealthCheck : IHealthCheck
 {
     public ReadyHealthCheck(
-        ReadWrite dbRw,
-        ReadOnly dbRo,
+        AuthenticationDbContextReadWrite dbRw,
+        AuthenticationDbContextReadOnly dbRo,
         ILogger<ReadyHealthCheck> logger)
     {
         _dbRw = dbRw;
@@ -44,7 +44,7 @@ public class ReadyHealthCheck : IHealthCheck
         );
     }
     
-    private readonly ReadWrite _dbRw;
-    private readonly ReadOnly _dbRo;
+    private readonly AuthenticationDbContextReadWrite _dbRw;
+    private readonly AuthenticationDbContextReadOnly _dbRo;
     private readonly ILogger<ReadyHealthCheck> _logger;
 }

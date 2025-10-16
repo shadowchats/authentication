@@ -1,11 +1,3 @@
-﻿// Shadowchats — Copyright (C) 2025
-// Dorovskoy Alexey Vasilievich (One290 / 0ne290) <lenya.dorovskoy@mail.ru>
-// This program is free software: you can redistribute it and/or modify
-// it under the terms of the GNU Affero General Public License as published by
-// the Free Software Foundation, either version 3 of the License, or
-// (at your option) any later version. See the LICENSE file for details.
-// For full copyright and authorship information, see the COPYRIGHT file.
-
 using Shadowchats.Authentication.Core.Application.Base;
 using Shadowchats.Authentication.Core.Application.Interfaces;
 using Shadowchats.Authentication.Core.Domain.Aggregates;
@@ -14,16 +6,9 @@ using Shadowchats.Authentication.Core.Domain.Interfaces;
 
 namespace Shadowchats.Authentication.Core.Application.UseCases.LogoutAll;
 
-public record Command : ICommand<NoResult>
+public class LogoutAllHandler : IMessageHandler<LogoutAllCommand, NoResult>
 {
-    public required string Login { get; init; }
-
-    public required string Password { get; init; }
-}
-
-public class Handler : IMessageHandler<Command, NoResult>
-{
-    public Handler(IAggregateRootRepository<Account> accountRepository,
+    public LogoutAllHandler(IAggregateRootRepository<Account> accountRepository,
         IAggregateRootRepository<Session> sessionRepository, IPersistenceContext persistenceContext,
         IPasswordHasher passwordHasher)
     {
@@ -33,7 +18,7 @@ public class Handler : IMessageHandler<Command, NoResult>
         _passwordHasher = passwordHasher;
     }
 
-    public async Task<NoResult> Handle(Command command)
+    public async Task<NoResult> Handle(LogoutAllCommand command)
     {
         var account = await _accountRepository.Find(a => a.Credentials.Login == command.Login);
         if (account is null || !account.Credentials.VerifyPassword(_passwordHasher, command.Password))

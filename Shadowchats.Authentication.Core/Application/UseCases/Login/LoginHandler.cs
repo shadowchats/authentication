@@ -1,11 +1,3 @@
-﻿// Shadowchats — Copyright (C) 2025
-// Dorovskoy Alexey Vasilievich (One290 / 0ne290) <lenya.dorovskoy@mail.ru>
-// This program is free software: you can redistribute it and/or modify
-// it under the terms of the GNU Affero General Public License as published by
-// the Free Software Foundation, either version 3 of the License, or
-// (at your option) any later version. See the LICENSE file for details.
-// For full copyright and authorship information, see the COPYRIGHT file.
-
 using Shadowchats.Authentication.Core.Application.Interfaces;
 using Shadowchats.Authentication.Core.Domain.Aggregates;
 using Shadowchats.Authentication.Core.Domain.Exceptions;
@@ -13,23 +5,9 @@ using Shadowchats.Authentication.Core.Domain.Interfaces;
 
 namespace Shadowchats.Authentication.Core.Application.UseCases.Login;
 
-public record Command : ICommand<Result>
+public class LoginHandler : IMessageHandler<LoginCommand, LoginResult>
 {
-    public required string Login { get; init; }
-
-    public required string Password { get; init; }
-}
-
-public record Result
-{
-    public required string RefreshToken { get; init; }
-
-    public required string AccessToken { get; init; }
-}
-
-public class Handler : IMessageHandler<Command, Result>
-{
-    public Handler(IAggregateRootRepository<Account> accountRepository,
+    public LoginHandler(IAggregateRootRepository<Account> accountRepository,
         IAggregateRootRepository<Session> sessionRepository, IPersistenceContext persistenceContext,
         IPasswordHasher passwordHasher, IGuidGenerator guidGenerator, IDateTimeProvider dateTimeProvider,
         IRefreshTokenGenerator refreshTokenGenerator, IAccessTokenIssuer accessTokenIssuer)
@@ -44,7 +22,7 @@ public class Handler : IMessageHandler<Command, Result>
         _accessTokenIssuer = accessTokenIssuer;
     }
 
-    public async Task<Result> Handle(Command command)
+    public async Task<LoginResult> Handle(LoginCommand command)
     {
         var account = await _accountRepository.Find(a => a.Credentials.Login == command.Login);
         if (account is null || !account.Credentials.VerifyPassword(_passwordHasher, command.Password))
@@ -54,7 +32,7 @@ public class Handler : IMessageHandler<Command, Result>
         await _sessionRepository.Add(session);
         await _persistenceContext.SaveChanges();
 
-        return new Result
+        return new LoginResult
         {
             RefreshToken = session.RefreshToken,
             AccessToken = session.GenerateAccessToken(_accessTokenIssuer, _dateTimeProvider)

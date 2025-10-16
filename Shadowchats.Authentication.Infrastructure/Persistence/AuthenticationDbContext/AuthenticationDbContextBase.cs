@@ -1,22 +1,14 @@
-﻿// Shadowchats — Copyright (C) 2025
-// Dorovskoy Alexey Vasilievich (One290 / 0ne290) <lenya.dorovskoy@mail.ru>
-// This program is free software: you can redistribute it and/or modify
-// it under the terms of the GNU Affero General Public License as published by
-// the Free Software Foundation, either version 3 of the License, or
-// (at your option) any later version. See the LICENSE file for details.
-// For full copyright and authorship information, see the COPYRIGHT file.
-
 using Microsoft.EntityFrameworkCore;
-using Microsoft.EntityFrameworkCore.Design;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 using Microsoft.EntityFrameworkCore.Storage;
 using Shadowchats.Authentication.Core.Domain.Aggregates;
+using Shadowchats.Authentication.Infrastructure.Persistence.Interfaces;
 
 namespace Shadowchats.Authentication.Infrastructure.Persistence.AuthenticationDbContext;
 
-public abstract class Base<TContext> : DbContext, IAuthenticationDbContext where TContext : DbContext
+public abstract class AuthenticationDbContextBase<TContext> : DbContext, IAuthenticationDbContext where TContext : DbContext
 {
-    public Base(DbContextOptions<TContext> options) : base(options) { }
+    protected AuthenticationDbContextBase(DbContextOptions<TContext> options) : base(options) { }
 
     private class AccountEntityTypeConfiguration : IEntityTypeConfiguration<Account>
     {
@@ -98,26 +90,4 @@ public abstract class Base<TContext> : DbContext, IAuthenticationDbContext where
     public DbSet<Account> Accounts { get; set; } = null!;
 
     public DbSet<Session> Sessions { get; set; } = null!;
-}
-    
-public class ReadWrite : Base<ReadWrite>
-{
-    public ReadWrite(DbContextOptions<ReadWrite> options) : base(options) { }
-}
-
-public class ReadOnly : Base<ReadOnly>
-{
-    public ReadOnly(DbContextOptions<ReadOnly> options) : base(options) { }
-}
-
-public class Factory : IDesignTimeDbContextFactory<ReadWrite>
-{
-    public ReadWrite CreateDbContext(string[] args)
-    {
-        var optionsBuilder = new DbContextOptionsBuilder<ReadWrite>();
-        
-        optionsBuilder.UseNpgsql(args.Length > 0 ? args[0] : "Host=.;Database=Dummy;");
-
-        return new ReadWrite(optionsBuilder.Options);
-    }
 }

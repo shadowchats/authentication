@@ -1,11 +1,3 @@
-﻿// Shadowchats — Copyright (C) 2025
-// Dorovskoy Alexey Vasilievich (One290 / 0ne290) <lenya.dorovskoy@mail.ru>
-// This program is free software: you can redistribute it and/or modify
-// it under the terms of the GNU Affero General Public License as published by
-// the Free Software Foundation, either version 3 of the License, or
-// (at your option) any later version. See the LICENSE file for details.
-// For full copyright and authorship information, see the COPYRIGHT file.
-
 using Shadowchats.Authentication.Core.Application.Base;
 using Shadowchats.Authentication.Core.Application.Exceptions;
 using Shadowchats.Authentication.Core.Application.Interfaces;
@@ -16,16 +8,9 @@ using Shadowchats.Authentication.Core.Domain.ValueObjects;
 
 namespace Shadowchats.Authentication.Core.Application.UseCases.RegisterAccount;
 
-public record Command : ICommand<NoResult>
+public class RegisterAccountHandler : IMessageHandler<RegisterAccountCommand, NoResult>
 {
-    public required string Login { get; init; }
-
-    public required string Password { get; init; }
-}
-
-public class Handler : IMessageHandler<Command, NoResult>
-{
-    public Handler(IAggregateRootRepository<Account> accountRepository,
+    public RegisterAccountHandler(IAggregateRootRepository<Account> accountRepository,
         IPersistenceContext persistenceContext, IPasswordHasher passwordHasher, IGuidGenerator guidGenerator)
     {
         _accountRepository = accountRepository;
@@ -34,7 +19,7 @@ public class Handler : IMessageHandler<Command, NoResult>
         _guidGenerator = guidGenerator;
     }
 
-    public async Task<NoResult> Handle(Command command)
+    public async Task<NoResult> Handle(RegisterAccountCommand command)
     {
         var credentials = Credentials.Create(_passwordHasher, command.Login, command.Password);
         var account = Account.Create(_guidGenerator, credentials);
