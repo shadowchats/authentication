@@ -1,0 +1,15 @@
+{
+  "settings": [
+    {
+      "options": {
+        "grpc": {
+          "endpoint": "http://shadowchats.local:8080/authentication-unsafe",
+          "mode": "grpcWeb"
+        },
+        "rest": {
+          "endpoint": "http://shadowchats.local:8080/authentication-unsafe"
+        }
+      }
+    }
+  ]
+}

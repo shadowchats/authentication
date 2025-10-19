@@ -1,0 +1,21 @@
+{
+  "id": "6102b64b-e2fe-4092-81c7-02edbefcd0c7",
+  "importStreams": [
+    {
+      "id": "25f620f8-8fbc-41ac-8b77-e395ee39d053",
+      "name": "proto-file",
+      "importerName": "ProtoFile",
+      "createMissingOperations": true,
+      "options": {
+        "files": [
+          "../Shadowchats.Authentication.Presentation/Protos/authentication_service.proto"
+        ],
+        "importPaths": [],
+        "excludedFiles": []
+      }
+    }
+  ],
+  "authConfigs": [],
+  "certificates": [],
+  "proxies": []
+}

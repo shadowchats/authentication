@@ -24,14 +24,11 @@ public class CustomApplicationBuilder
     public static async Task<WebApplication?> Build(string[] args)
     {
         var builder = WebApplication.CreateBuilder();
-        
+
         builder.WebHost.UseSetting("AllowedHosts", "*");
         builder.WebHost.ConfigureKestrel(options =>
         {
-            options.ListenAnyIP(5000, listenOptions =>
-            {
-                listenOptions.Protocols = HttpProtocols.Http1AndHttp2;
-            });
+            options.ListenAnyIP(5000, listenOptions => { listenOptions.Protocols = HttpProtocols.Http1AndHttp2; });
         });
 
         builder.Services.AddGrpc(options => { options.Interceptors.Add<ExceptionHandlingGrpcInterceptor>(); });
@@ -50,9 +47,12 @@ public class CustomApplicationBuilder
         builder.Services.AddHealthChecks()
             .AddCheck("health", () => HealthCheckResult.Healthy())
             .AddCheck<ReadyHealthCheck>("ready");
-        
+
         var app = builder.Build();
-        
+
+        var lifetime = app.Services.GetRequiredService<IHostApplicationLifetime>();
+        lifetime.ApplicationStopped.Register(Log.CloseAndFlush);
+
         if (args.Contains("migrate"))
         {
             using var scope = app.Services.CreateScope();
@@ -63,7 +63,11 @@ public class CustomApplicationBuilder
             logger.LogInformation("Migrations applied successfully.");
             return null;
         }
-        
+
+        app.UseSerilogRequestLogging();
+
+        app.UseGrpcWeb();
+
         app.MapHealthChecks("/health", new HealthCheckOptions
         {
             Predicate = check => check.Name == "health"
@@ -73,17 +77,13 @@ public class CustomApplicationBuilder
             Predicate = check => check.Name == "ready"
         });
 
-        var lifetime = app.Services.GetRequiredService<IHostApplicationLifetime>();
-        lifetime.ApplicationStopped.Register(Log.CloseAndFlush);
-
-        app.UseSerilogRequestLogging();
-
-        app.MapGrpcService<AuthenticationGrpcService>();
+        app.MapGrpcService<AuthenticationGrpcService>().EnableGrpcWeb();
 
         return app;
     }
-    
-    private static async Task WaitForDatabaseAsync(AuthenticationDbContextReadWrite db, ILogger<CustomApplicationBuilder> logger)
+
+    private static async Task WaitForDatabaseAsync(AuthenticationDbContextReadWrite db,
+        ILogger<CustomApplicationBuilder> logger)
     {
         const int maxRetries = 10;
         var delay = TimeSpan.FromSeconds(5);
@@ -101,6 +101,7 @@ public class CustomApplicationBuilder
                 await Task.Delay(delay);
             }
         }
+
         throw new Exception("Database is unreachable after multiple retries.");
     }
 }

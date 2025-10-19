@@ -1,0 +1,13 @@
+{
+  "details": {
+    "methodFqn": "authentication.AuthenticationService.RegisterAccount"
+  },
+  "requests": [
+    {
+      "location": "RegisterAccount-request.json"
+    }
+  ],
+  "operationType": "unary",
+  "invokerName": "grpc",
+  "importStreamId": "25f620f8-8fbc-41ac-8b77-e395ee39d053"
+}
