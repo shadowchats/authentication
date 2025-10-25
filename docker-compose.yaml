@@ -1,0 +1,44 @@
+services:
+  postgres:
+    image: postgres:18-alpine
+    container_name: shadowchats-postgres
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+      POSTGRES_DB: shadowchats_auth
+    volumes:
+      - pg_data:/var/lib/postgresql/data
+    ports:
+      - "5432:5432"
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres -d shadowchats_auth"]
+      interval: 5s
+      timeout: 3s
+      retries: 10
+
+  auth-service:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: shadowchats-auth
+    depends_on:
+      postgres:
+        condition: service_healthy
+    environment:
+      ASPNETCORE_ENVIRONMENT: Development
+    ports:
+      - "5000:5000"
+    restart: unless-stopped
+
+    volumes:
+      - ./Shadowchats.Authentication.Presentation/appsettings.json:/app/appsettings.json:ro
+
+    healthcheck:
+      test: ["CMD-SHELL", "wget --no-verbose --tries=1 --spider http://localhost:5000/ready || exit 1"]
+      interval: 10s
+      timeout: 3s
+      retries: 6
+
+volumes:
+  pg_data:
