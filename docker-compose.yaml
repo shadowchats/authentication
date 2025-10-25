@@ -27,7 +27,7 @@ services:
         condition: service_healthy
     environment:
       ASPNETCORE_ENVIRONMENT: Development
-    command: ["dotnet", "Shadowchats.Authentication.Presentation.dll", "--migrate"]
+    command: ["dotnet", "Shadowchats.Authentication.Presentation.dll", "migrate"]
     restart: "no"
     deploy:
       replicas: 0
