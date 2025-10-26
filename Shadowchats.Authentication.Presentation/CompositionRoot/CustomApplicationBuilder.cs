@@ -28,7 +28,8 @@ public class CustomApplicationBuilder
         builder.WebHost.UseSetting("AllowedHosts", "*");
         builder.WebHost.ConfigureKestrel(options =>
         {
-            options.ListenAnyIP(5000, listenOptions => { listenOptions.Protocols = HttpProtocols.Http1AndHttp2; });
+            options.ListenAnyIP(50051, listenOptions => { listenOptions.Protocols = HttpProtocols.Http2; });// gRPC
+            options.ListenAnyIP(8081, listenOptions => { listenOptions.Protocols = HttpProtocols.Http1; });// gRPC Web
         });
 
         builder.Services.AddGrpc(options => { options.Interceptors.Add<ExceptionHandlingGrpcInterceptor>(); });
