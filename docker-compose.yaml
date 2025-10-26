@@ -25,10 +25,9 @@ services:
     depends_on:
       postgres:
         condition: service_healthy
-    environment:
-      ASPNETCORE_ENVIRONMENT: Development
     ports:
-      - "5000:5000"
+      - "50051:50051"
+      - "8081:8081"
 
     volumes:
       - ./Shadowchats.Authentication.Presentation/appsettings.json:/app/appsettings.json:ro
