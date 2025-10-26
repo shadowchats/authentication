@@ -17,24 +17,6 @@ services:
       timeout: 3s
       retries: 10
 
-  auth-migrate:
-    build:
-      context: .
-      dockerfile: Dockerfile
-    container_name: shadowchats-auth-migrate
-    depends_on:
-      postgres:
-        condition: service_healthy
-    environment:
-      ASPNETCORE_ENVIRONMENT: Development
-    command: ["dotnet", "Shadowchats.Authentication.Presentation.dll", "migrate"]
-    restart: "no"
-    deploy:
-      replicas: 0
-
-    volumes:
-      - ./Shadowchats.Authentication.Presentation/appsettings.json:/app/appsettings.json:ro
-
   auth-service:
     build:
       context: .
@@ -57,9 +39,7 @@ services:
       timeout: 3s
       retries: 6
 
-    restart: "no"
-    deploy:
-      replicas: 0
+    restart: "unless-stopped"
 
 volumes:
   pg_data:
