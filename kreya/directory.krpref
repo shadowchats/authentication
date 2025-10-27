@@ -3,8 +3,9 @@
     {
       "options": {
         "grpc": {
-          "endpoint": "http://shadowchats.local:8080/authentication-unsafe",
-          "mode": "grpcWeb"
+          "endpoint": "http://192.168.0.100:50051",
+          "mode": "grpc",
+          "disableServerCertificateValidation": true
         },
         "rest": {
           "endpoint": "http://shadowchats.local:8080/authentication-unsafe"
